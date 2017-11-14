@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS db_exist;
 CREATE TABLE db_exist (
-	flag BOOLEAN
+	flag TINYINT
 )
 COMMENT = 'Tabella per inizializzare il database, flag = false per resettare';
 INSERT INTO db_exist VALUES (true);
@@ -11,7 +11,7 @@ CREATE TABLE utenti (
   nome VARCHAR(45) NOT NULL,
   password VARCHAR(15) NOT NULL,
   ruolo VARCHAR(20) NOT NULL DEFAULT 'cliente',
-  attivo BOOLEAN NULL DEFAULT false,
+  attivo TINYINT NULL DEFAULT false,
   PRIMARY KEY (id)
 )
 COMMENT = 'Utenti';
@@ -21,8 +21,8 @@ CREATE TABLE libri (
   id int NOT NULL AUTO_INCREMENT,
   titolo VARCHAR(45),
   editore VARCHAR(45),
-  cancellato BOOLEAN DEFAULT false,
-  disponibile BOOLEAN DEFAULT true,
+  cancellato TINYINT DEFAULT false,
+  disponibile TINYINT DEFAULT true,
   PRIMARY KEY (id),
   UNIQUE INDEX libri (titolo ASC)
 )
@@ -55,3 +55,25 @@ CREATE TABLE autore_libro (
     ON UPDATE NO ACTION
 )
 COMMENT = 'Associazione tra autore e libro';
+
+DROP TABLE IF EXISTS prestiti;
+CREATE TABLE prestiti (
+  id_utente INT NOT NULL,
+  id_libro INT NOT NULL,
+  data_prestito DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  data_restituzione DATETIME NULL DEFAULT NULL,
+  restituito TINYINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (id_utente, id_libro),
+  INDEX fk_idLibro_idx (id_libro ASC),
+  UNIQUE INDEX id_libro_UNIQUE (id_libro ASC),
+  CONSTRAINT fk_idUtente
+    FOREIGN KEY (id_utente)
+    REFERENCES utenti (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_idLibro
+    FOREIGN KEY (id_libro)
+    REFERENCES libri (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+COMMENT = 'Prestiti libri';
