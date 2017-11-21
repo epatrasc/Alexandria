@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <form class="form-signin" action="<c:url value="/login" />" method="post">
     <h2 class="form-signin-heading">Login</h2>
     <div class="form-group">
@@ -9,4 +10,14 @@
     <div class="form-group">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Invia</button>
     </div>
+   	<c:if test="${logout == true }">
+	    <div class="form-group">
+	    <div class="alert alert-success" role="alert">Logout avvenuto con successo!</div>
+	    </div>
+    </c:if>
+    <c:if test="${loginError == true }">
+	    <div class="form-group">
+	    <div class="alert alert-danger" role="alert">${messaggio}</div>
+	    </div>
+    </c:if>
 </form>

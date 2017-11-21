@@ -29,7 +29,8 @@ public class Login extends HttpServlet {
 		
 		// login fallito, mando messaggio alla jsp
 		if(utente == null){
-			request.setAttribute("isLogged", false);
+			request.setAttribute("loginError", true);
+			request.setAttribute("messaggio", "Utente o password errati. Riprovare");
 			
 			RequestDispatcher rd = ctx.getRequestDispatcher("/index.jsp");
 			rd.forward(request, response);

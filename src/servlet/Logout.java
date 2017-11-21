@@ -2,6 +2,8 @@ package servlet;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,9 +21,14 @@ public class Logout extends HttpServlet {
 			session.setMaxInactiveInterval(1);
 			session.invalidate();
 		}
-		response.sendRedirect(request.getContextPath() + "/home");
+
+		request.setAttribute("logout", true);
+		
+		RequestDispatcher rd = getServletContext().getRequestDispatcher("/home");
+		rd.forward(request, response);
+		// response.sendRedirect(request.getContextPath() + "/home");
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
