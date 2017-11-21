@@ -8,11 +8,11 @@
 		<%@include file="includes/header.jsp" %>
 		<main role="main" class="container">
 			<c:choose>
-			    <c:when test= "${isLogged != true}">
-			    <%@include file="/includes/login.jsp" %>
+			    <c:when test= "${isLogged == true}">
+			    	<%@include file="/includes/mostra_libri.jsp" %>
 			    </c:when>
 			    <c:otherwise>
-			        <%@include file="/includes/mostra_libri.jsp" %>
+			    	<%@include file="/includes/login.jsp" %>
 			    </c:otherwise>
 			</c:choose>
 		</main>
