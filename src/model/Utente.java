@@ -10,7 +10,15 @@ public class Utente {
 	private boolean attivo;
 
 	private enum Ruoli {
-		CLIENTE, AMMINISTRATORE
+		cliente, amministratore
+	}
+	
+	public Utente() {
+	}
+
+	public Utente(String nome, String password) {
+		this.nome = nome;
+		this.password = password;
 	}
 
 	public int getId() {
@@ -42,7 +50,7 @@ public class Utente {
 	}
 
 	public void setRuolo(String ruolo) {
-		if (Type.isInEnum(ruolo, Ruoli.class)){
+		if (Type.isInEnum(ruolo, Ruoli.class)) {
 			this.ruolo = ruolo;
 		}
 	}

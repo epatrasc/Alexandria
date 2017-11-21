@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mysql.jdbc.Driver;
@@ -28,8 +29,9 @@ public class Database {
 	}
 
 	public static Connection getConnection() throws SQLException {
-		if(instance == null) Database.getInstance();
-		
+		if (instance == null)
+			Database.getInstance();
+
 		Connection connection = null;
 
 		try {
@@ -65,12 +67,9 @@ public class Database {
 	}
 
 	public static void printSQLException(SQLException ex) {
-		System.out.println("SQLException: " + ex.getMessage());
-		System.out.println("SQLState: " + ex.getSQLState());
-		System.out.println("VendorError: " + ex.getErrorCode());
-		
 		logger.severe("SQLException: " + ex.getMessage());
 		logger.severe("SQLState: " + ex.getSQLState());
 		logger.severe("VendorError: " + ex.getErrorCode());
+		logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
 	}
 }

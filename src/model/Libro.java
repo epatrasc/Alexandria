@@ -5,6 +5,8 @@ import java.util.List;
 public class Libro {
 	private int id;
 	private String titolo;
+	private String descrizione;
+	private String imageUrl;
 	private List<Integer> autori;
 	private String editore;
 	private boolean cancellato;
@@ -56,5 +58,21 @@ public class Libro {
 
 	public void setDisponibile(boolean disponibile) {
 		this.disponibile = disponibile;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dao.Database;
@@ -60,7 +61,10 @@ public class AutoreDaoImpl implements AutoreDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
 		} finally {
 			Database.closeConnection(connection);
 		}

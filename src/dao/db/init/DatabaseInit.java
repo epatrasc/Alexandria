@@ -10,23 +10,32 @@ import java.sql.Statement;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
+
 import dao.Database;
 
 public class DatabaseInit {
 	private static final Logger logger = Logger.getLogger(DatabaseInit.class.getName());
-	private static final String FILE_INIT = "db/libreria/init/sql/init_db.sql";
+	private static final String DB_FILE_INIT = "/init/environment/init_db.sql";
+	private static final String DATA_FILE_INIT = "/init/environment/init_data.sql";
+	private Connection connection;
+	private boolean connected;
+	private ServletContext servletContext;
 
-	Connection connection;
+	public DatabaseInit(ServletContext servletContext) {
+		this.servletContext = servletContext;
+		connected = false;
+		try {
+			connection = Database.getConnection();
+			connection.setAutoCommit(false);
 
-	public DatabaseInit() throws SQLException {
-		connection = Database.getConnection();
-		connection.setAutoCommit(false);
+			connected = connection != null && !connection.isClosed() ? true : false;
+		} catch (SQLException ex) {
+			Database.printSQLException(ex);
+		}
 	}
 
 	public boolean create() {
-		String query = "";
-		PreparedStatement pst;
-
 		try {
 
 			if (isDBConfigured()) {
@@ -35,18 +44,10 @@ public class DatabaseInit {
 			}
 
 			logger.info("Avvio creazione oggetti");
+			execScript(connection, readFile(DB_FILE_INIT));
 
-			query = readFile(FILE_INIT);
-
-			for (String command : query.split(";")) {
-				command = command.trim().replace("\n", "");
-				if (!command.isEmpty()) {
-					logger.info("command:" + command);
-					pst = connection.prepareStatement(command);
-					pst.clearParameters();
-					pst.execute();
-				}
-			}
+			logger.info("Avvio creazione dati");
+			execScript(connection, readFile(DATA_FILE_INIT));
 
 			connection.commit();
 		} catch (SQLException ex) {
@@ -58,6 +59,23 @@ public class DatabaseInit {
 			Database.printSQLException(ex);
 		} finally {
 			Database.closeConnection(connection);
+		}
+
+		return true;
+	}
+
+	private boolean execScript(Connection connection, String scriptSQL) throws SQLException {
+		PreparedStatement pst;
+		logger.fine("Esecuzione commandi:");
+		for (String command : scriptSQL.split(";")) {
+			command = command.trim().replace("\n", "");
+			logger.fine(command);
+			if (!command.isEmpty()) {
+				logger.info("command:" + command);
+				pst = connection.prepareStatement(command);
+				pst.clearParameters();
+				pst.execute();
+			}
 		}
 
 		return true;
@@ -82,9 +100,7 @@ public class DatabaseInit {
 	}
 
 	private String readFile(String fileName) {
-		ClassLoader classLoader = getClass().getClassLoader();
-
-		String filePath = classLoader.getResource(fileName).getFile();
+		String filePath = servletContext.getRealPath(fileName);
 		return readFile(new File(filePath));
 	}
 
@@ -105,5 +121,13 @@ public class DatabaseInit {
 		}
 
 		return result.toString();
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
 	}
 }

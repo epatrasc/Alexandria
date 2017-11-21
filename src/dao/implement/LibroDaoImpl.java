@@ -34,7 +34,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean insert() {
 		Connection connection = null;
-		String query = "INSERT INTO libri (titolo, editore, cancellato, disponibile) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO libri (titolo, descrizione, image_url, editore, cancellato, disponibile) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try {
 			connection = Database.getConnection();
@@ -45,6 +45,8 @@ public class LibroDaoImpl implements LibroDao {
 			
 			int index = 1;
 			pst.setString(index, libro.getTitolo());
+			pst.setString(index, libro.getDescrizione());
+			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
 			pst.setBoolean(++index, libro.isCancellato());
 			pst.setBoolean(++index, libro.isDisponibile());
@@ -78,7 +80,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE libri set titolo = ?, editore = ?, cancellato = ?, disponibile = ?) WHERE id=?";
+		String query = "UPDATE libri set titolo = ?, descrizione = ?, image_url = ?, editore = ?, cancellato = ?, disponibile = ?) WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -87,6 +89,8 @@ public class LibroDaoImpl implements LibroDao {
 
 			int index = 1;
 			pst.setString(index, libro.getTitolo());
+			pst.setString(index, libro.getDescrizione());
+			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
 			pst.setBoolean(++index, libro.isCancellato());
 			pst.setBoolean(++index, libro.isDisponibile());
@@ -112,7 +116,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean delete() {
 		Connection connection = null;
-		String query = "DELETE FROM libri WHERE id=?";
+		String query = "UPDATE libri set cancellato = true WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -144,7 +148,7 @@ public class LibroDaoImpl implements LibroDao {
 			connection = Database.getConnection();
 
 			PreparedStatement pst = connection
-					.prepareStatement("SELECT id, titolo, editore, cancellato, disponibile FROM libri WHERE id=?");
+					.prepareStatement("SELECT id, titolo, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
 			pst.clearParameters();
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
@@ -168,8 +172,10 @@ public class LibroDaoImpl implements LibroDao {
 		int index = 1;
 		
 		Libro libro = new Libro();
-		libro.setTitolo(rs.getString(index));
-		libro.setId(rs.getInt(++index));
+		libro.setId(rs.getInt(index));
+		libro.setTitolo(rs.getString(++index));
+		libro.setDescrizione(rs.getString(++index));
+		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));
 		libro.setCancellato(rs.getBoolean(++index));
 		libro.setDisponibile(rs.getBoolean(++index));

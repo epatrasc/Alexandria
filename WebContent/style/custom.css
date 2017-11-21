@@ -1,0 +1,14 @@
+.login-space {
+	height:100%;
+	width: auto;
+	border-left: 1px solid #868e96;
+}
+
+.login-space img {
+	margin-left: 10px;
+	border-radius: 10%;
+}
+
+.capitalize {
+	text-transform: capitalize;
+}

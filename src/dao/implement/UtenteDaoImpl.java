@@ -5,15 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dao.Database;
 import dao.interfaces.UtenteDao;
 import model.Utente;
 
-public class UtenteDaoImpl implements UtenteDao{
+public class UtenteDaoImpl implements UtenteDao {
 	private static final Logger logger = Logger.getLogger(UtenteDaoImpl.class.getName());
 	private Utente utente;
+
+	public UtenteDaoImpl() {
+
+	}
 
 	public UtenteDaoImpl(int id) {
 		this.utente = getUtenteById(id);
@@ -24,16 +29,24 @@ public class UtenteDaoImpl implements UtenteDao{
 	}
 
 	public UtenteDaoImpl(Utente utente) {
-		this.utente = utente;
-
 		if (utente == null) {
 			throw new IllegalArgumentException("Utente non inzializzato, passare un utente valido");
 		}
+
+		this.utente = utente;
+	}
+
+	public UtenteDaoImpl(String nome, String password) {
+		if (nome == null || password == null) {
+			throw new IllegalArgumentException("Utente non inzializzato, passare un nome e una password");
+		}
+
+		utente = new Utente(nome, password);
 	}
 
 	public boolean insert() {
 		Connection connection = null;
-		String query = "INSERT INTO utenti (nome, password, ruolo, attivo) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO utenti (nome, password, ruolo, attivo) VALUES (?, MD5(?), ?, ?)";
 
 		try {
 			connection = Database.getConnection();
@@ -61,7 +74,11 @@ public class UtenteDaoImpl implements UtenteDao{
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+			;
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -69,9 +86,9 @@ public class UtenteDaoImpl implements UtenteDao{
 		return true;
 	}
 
-	public boolean update()  {
+	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE utenti set nome = ?, password = ?, ruolo = ?, attivo = ?) WHERE id=?";
+		String query = "UPDATE utenti set nome = ?, password = MD5(?), ruolo = ?, attivo = ?) WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -91,15 +108,19 @@ public class UtenteDaoImpl implements UtenteDao{
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+			;
 		} finally {
 			Database.closeConnection(connection);
 		}
 
 		return true;
 	}
-	
-	public boolean delete()  {
+
+	public boolean delete() {
 		Connection connection = null;
 		String query = "DELETE FROM utenti WHERE id=?";
 
@@ -117,22 +138,25 @@ public class UtenteDaoImpl implements UtenteDao{
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+			;
 		} finally {
 			Database.closeConnection(connection);
 		}
 
 		return true;
 	}
-	
+
 	public Utente getUtenteById(int id) {
 		Connection connection = null;
 
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection
-					.prepareStatement("SELECT id, nome, password, ruolo, attivo FROM utenti WHERE id=?");
+			PreparedStatement pst = connection.prepareStatement("SELECT id, nome, ruolo, attivo FROM utenti WHERE id=?");
 			pst.clearParameters();
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
@@ -140,7 +164,36 @@ public class UtenteDaoImpl implements UtenteDao{
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return null;
+	}
+
+	public Utente getUtente() {
+		Connection connection = null;
+
+		try {
+			connection = Database.getConnection();
+
+			PreparedStatement pst = connection.prepareStatement("SELECT id, nome, ruolo, attivo FROM utenti WHERE nome = ? and password = MD5(?)");
+			pst.clearParameters();
+			pst.setString(1, utente.getNome());
+			pst.setString(2, utente.getPassword());
+			ResultSet rs = pst.executeQuery();
+
+			return fetchResultSet(rs);
+		} catch (SQLException ex) {
+			logger.severe(ex.getMessage());
+			logger.severe("SQLException: " + ex.getMessage());
+			logger.severe("SQLState: " + ex.getSQLState());
+			logger.severe("VendorError: " + ex.getErrorCode());
+			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -149,15 +202,15 @@ public class UtenteDaoImpl implements UtenteDao{
 	}
 
 	private Utente fetchResultSet(ResultSet rs) throws SQLException {
-		rs.next();
-
-		Utente utente = new Utente();
-		utente.setId(rs.getInt(1));
-		utente.setNome(rs.getString(2));
-		utente.setPassword(rs.getString(3));
-		utente.setRuolo(rs.getString(4));
-		utente.setAttivo(rs.getBoolean(5));
-
+		Utente utente = null;
+		if (rs.next()) {
+			utente = new Utente();
+			utente.setId(rs.getInt(1));
+			utente.setNome(rs.getString(2));
+			utente.setRuolo(rs.getString(3));
+			utente.setAttivo(rs.getBoolean(4));
+		}
+		
 		return utente;
 	}
 }

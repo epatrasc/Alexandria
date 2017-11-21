@@ -9,9 +9,9 @@ DROP TABLE IF EXISTS utenti;
 CREATE TABLE utenti (
   id int NOT NULL AUTO_INCREMENT,
   nome VARCHAR(45) NOT NULL,
-  password VARCHAR(15) NOT NULL,
+  password VARCHAR(100) NOT NULL,
   ruolo VARCHAR(20) NOT NULL DEFAULT 'cliente',
-  attivo TINYINT NULL DEFAULT false,
+  attivo TINYINT NULL DEFAULT true,
   PRIMARY KEY (id)
 )
 COMMENT = 'Utenti';
@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS libri;
 CREATE TABLE libri (
   id int NOT NULL AUTO_INCREMENT,
   titolo VARCHAR(45),
+  descrizione VARCHAR(500),
+  image_url VARCHAR(1000),
   editore VARCHAR(45),
   cancellato TINYINT DEFAULT false,
   disponibile TINYINT DEFAULT true,
