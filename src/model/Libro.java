@@ -9,8 +9,6 @@ public class Libro {
 	private String imageUrl;
 	private List<Integer> autori;
 	private String editore;
-	private boolean cancellato;
-	private boolean disponibile;
 
 	public int getId() {
 		return id;
@@ -42,22 +40,6 @@ public class Libro {
 
 	public void setEditore(String editore) {
 		this.editore = editore;
-	}
-
-	public boolean isCancellato() {
-		return cancellato;
-	}
-
-	public void setCancellato(boolean cancellato) {
-		this.cancellato = cancellato;
-	}
-
-	public boolean isDisponibile() {
-		return disponibile;
-	}
-
-	public void setDisponibile(boolean disponibile) {
-		this.disponibile = disponibile;
 	}
 
 	public String getDescrizione() {

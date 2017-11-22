@@ -34,7 +34,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean insert() {
 		Connection connection = null;
-		String query = "INSERT INTO libri (titolo, descrizione, image_url, editore, cancellato, disponibile) VALUES (?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO libri (titolo, descrizione, image_url, editore) VALUES (?, ?, ?, ?)";
 
 		try {
 			connection = Database.getConnection();
@@ -48,8 +48,6 @@ public class LibroDaoImpl implements LibroDao {
 			pst.setString(index, libro.getDescrizione());
 			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
-			pst.setBoolean(++index, libro.isCancellato());
-			pst.setBoolean(++index, libro.isDisponibile());
 
 			if (pst.executeUpdate() == 0) {
 				logger.info("Creating libro failed, no rows affected.");
@@ -80,7 +78,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE libri set titolo = ?, descrizione = ?, image_url = ?, editore = ?, cancellato = ?, disponibile = ?) WHERE id=?";
+		String query = "UPDATE libri set titolo = ?, descrizione = ?, image_url = ?, editore = ?) WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -92,8 +90,6 @@ public class LibroDaoImpl implements LibroDao {
 			pst.setString(index, libro.getDescrizione());
 			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
-			pst.setBoolean(++index, libro.isCancellato());
-			pst.setBoolean(++index, libro.isDisponibile());
 			pst.setInt(++index, libro.getId());
 
 			if (pst.executeUpdate() == 0) {
@@ -177,8 +173,6 @@ public class LibroDaoImpl implements LibroDao {
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));
-		libro.setCancellato(rs.getBoolean(++index));
-		libro.setDisponibile(rs.getBoolean(++index));
 
 		return libro;
 	}

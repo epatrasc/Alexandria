@@ -3,9 +3,9 @@ package servlet;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,12 +21,17 @@ public class Logout extends HttpServlet {
 			session.setMaxInactiveInterval(1);
 			session.invalidate();
 		}
-
+		
+		// clear coockie
+		Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        
 		request.setAttribute("logout", true);
 		
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/home");
-		rd.forward(request, response);
-		// response.sendRedirect(request.getContextPath() + "/home");
+		// RequestDispatcher rd = getServletContext().getRequestDispatcher("/home");
+		// rd.forward(request, response);
+		response.sendRedirect(request.getContextPath() + "/login");
 	}
 
 	@Override
