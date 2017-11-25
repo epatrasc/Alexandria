@@ -10,7 +10,7 @@ import com.mysql.jdbc.Driver;
 
 public class Database {
 	private static final Logger logger = Logger.getLogger(Database.class.getName());
-	private static final String CONNECTION_STRING = "jdbc:mysql://localhost/libreria";
+	private static final String CONNECTION_STRING = "jdbc:mysql://localhost/alexandria";
 	private static final String CONNECTION_USER = "root";
 	private static final String CONNECTION_PSW = "root";
 
@@ -35,7 +35,7 @@ public class Database {
 		Connection connection = null;
 
 		try {
-			DriverManager.registerDriver(new Driver());
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			connection = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USER, CONNECTION_PSW);
 
 			if (connection.isClosed()) {
@@ -49,6 +49,15 @@ public class Database {
 			printSQLException(ex);
 
 			throw ex;
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return connection;

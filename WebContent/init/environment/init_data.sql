@@ -1,8 +1,9 @@
-TRUNCATE TABLE utenti;
 TRUNCATE TABLE autore_libro;
-TRUNCATE TABLE autori;
-TRUNCATE TABLE libri;
 TRUNCATE TABLE prestiti;
+DELETE FROM utenti;
+DELETE FROM autori;
+DELETE FROM libri;
+
 
 INSERT INTO utenti (nome, password, ruolo) VALUES('dante', MD5('dante'), 'cliente');
 INSERT INTO utenti (nome, password, ruolo) VALUES('verdi', MD5('verdi'), 'cliente');

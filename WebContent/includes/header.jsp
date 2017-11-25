@@ -7,7 +7,7 @@
 		<div class="col">
 			<div class="login-space">
 				<div class="row">
-					<div class="col-3">
+					<div class="col-4">
 						<img alt="utente" src="http://via.placeholder.com/65x65" />
 					</div>
 					<div class="col">

@@ -27,8 +27,6 @@ public class Login extends HttpServlet {
 
 		if (nome == null || password == null) {
 			RequestDispatcher rd = ctx.getRequestDispatcher("/login.jsp");
-			request.setAttribute("loginError", true);
-			request.setAttribute("messaggio", "Accesso negato effettuare login");
 			rd.forward(request, response);
 			return;
 		}

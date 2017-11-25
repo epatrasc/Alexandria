@@ -47,12 +47,12 @@ CREATE TABLE autore_libro (
   INDEX libro_fk_idx (id_libro ASC),
   CONSTRAINT autore_fk
     FOREIGN KEY (id_autore)
-    REFERENCES libreria.autori (id)
+    REFERENCES autori (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT libro_fk
     FOREIGN KEY (id_libro)
-    REFERENCES libreria.libri (id)
+    REFERENCES libri (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 )

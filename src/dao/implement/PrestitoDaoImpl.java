@@ -17,18 +17,18 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 	public PrestitoDaoImpl(int idUtente, int idLibro) {
 		this.prestito = getPrestitoById(idUtente, idLibro);
-
-		if (prestito == null) {
-			throw new IllegalArgumentException(String.format("Prestito con idUtente %d| idLibro inesistente", idUtente, idLibro));
-		}
 	}
 
 	public PrestitoDaoImpl(Prestito prestito) {
-		this.prestito = prestito;
-
 		if (prestito == null) {
 			throw new IllegalArgumentException("Prestito non inzializzato, passare un prestito valido");
 		}
+		
+		this.prestito = prestito;
+	}
+	
+	public boolean exists(){
+		return prestito != null ? true : false;
 	}
 	
 	@Override
@@ -103,11 +103,14 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 			PreparedStatement pst = connection
 					.prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ? and id_libro = ?");
-			pst.setInt(1, prestito.getIdUtente());
-			pst.setInt(2, prestito.getIdLibro());
+			pst.setInt(1, idUtente);
+			pst.setInt(2, idLibro);
 			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				return fetchResultSet(rs);
+			}
 			
-			return fetchResultSet(rs);
+			return null;
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
 			Database.printSQLException(ex);
