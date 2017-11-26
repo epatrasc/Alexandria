@@ -13,7 +13,7 @@
 	        </div>
 	        <c:if test="${utente != null}">
 		        <div class="card-footer">
-					<button id="presta" onclick="Prestito.presta(${libro.id})"class="btn btn-lg btn-primary btn-block" type="submit">Prendi in prestito</button>
+					<button id="presta" onclick="Prestito.presta(${libro.id})" class="btn btn-lg btn-primary btn-block" type="submit">Prendi in prestito</button>
 		        </div>
 	        </c:if>
 	    </div>

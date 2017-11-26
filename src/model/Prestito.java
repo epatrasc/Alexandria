@@ -9,6 +9,14 @@ public class Prestito {
 	private Date dataRestituzione;
 	private boolean restituito;
 
+	public Prestito() {
+	}
+
+	public Prestito(int idUtente, int idLibro) {
+		this.idUtente = idUtente;
+		this.idLibro = idLibro;
+	}
+
 	public int getIdUtente() {
 		return idUtente;
 	}

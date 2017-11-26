@@ -10,6 +10,13 @@ public class Libro {
 	private List<Integer> autori;
 	private String editore;
 
+	public Libro() {
+	}
+
+	public Libro(int id) {
+		this.id = id;
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -14,13 +14,9 @@ import model.Libro;
 public class LibroDaoImpl implements LibroDao {
 	private static final Logger logger = Logger.getLogger(LibroDaoImpl.class.getName());
 	private Libro libro;
-
+	
 	public LibroDaoImpl(int id) {
-		this.libro = getLibroById(id);
-
-		if (libro == null) {
-			throw new IllegalArgumentException(String.format("Libro con id %d inesistente", id));
-		}
+		this.libro = new Libro(id);
 	}
 
 	public LibroDaoImpl(Libro libro) {
@@ -135,7 +131,35 @@ public class LibroDaoImpl implements LibroDao {
 
 		return true;
 	}
+	
+	public boolean exists() {
+		return exists(libro.getId());
+	}
+	
+	public boolean exists(int id) {
+		Connection connection = null;
 
+		try {
+			connection = Database.getConnection();
+
+			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id_libro = ?");
+			pst.setInt(1, id);
+			
+			ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0 ? true : false;
+			}
+
+		} catch (SQLException ex) {
+			logger.severe(ex.getMessage());
+			Database.printSQLException(ex);
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return false;
+	}
+	
 	@Override
 	public Libro getLibroById(int id) {
 		Connection connection = null;
@@ -176,5 +200,4 @@ public class LibroDaoImpl implements LibroDao {
 
 		return libro;
 	}
-
 }

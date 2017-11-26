@@ -1,6 +1,7 @@
 package dao.db.init;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,9 +37,13 @@ public class DatabaseInit {
 	}
 
 	public boolean create() {
+		return create(false);
+	}
+
+	public boolean create(boolean forceInit) {
 		try {
 
-			if (isDBConfigured()) {
+			if (!forceInit && isDBConfigured()) {
 				logger.info("Database non neccessita inizializzazione.");
 				return false;
 			}
@@ -57,7 +62,12 @@ public class DatabaseInit {
 				e.printStackTrace();
 			}
 			Database.printSQLException(ex);
-		} finally {
+			return false;
+			
+		}catch(FileNotFoundException ex) {
+			return false;
+		}
+		finally {
 			Database.closeConnection(connection);
 		}
 
@@ -99,12 +109,12 @@ public class DatabaseInit {
 		return false;
 	}
 
-	private String readFile(String fileName) {
+	private String readFile(String fileName) throws FileNotFoundException {
 		String filePath = servletContext.getRealPath(fileName);
 		return readFile(new File(filePath));
 	}
 
-	private String readFile(File file) {
+	private String readFile(File file) throws FileNotFoundException {
 		StringBuilder result = new StringBuilder("");
 
 		try (Scanner scanner = new Scanner(file)) {
@@ -116,10 +126,7 @@ public class DatabaseInit {
 
 			scanner.close();
 
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-
 		return result.toString();
 	}
 

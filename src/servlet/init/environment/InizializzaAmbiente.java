@@ -1,8 +1,8 @@
 package servlet.init.environment;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,17 +19,21 @@ public class InizializzaAmbiente extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		ServletContext ctx = getServletContext();
-
-		// resetto database
+		PrintWriter out = response.getWriter();
+		
 		DatabaseInit initDb = new DatabaseInit(ctx);
-		if (initDb.isConnected()) {
-			initDb.create();
+		
+		if (!initDb.isConnected()) {
+			out.println("Database offline o configurazione errata");
+			return;
 		}
-
-		// TODO - feedback su esecuzione script
-
-		RequestDispatcher rd = ctx.getRequestDispatcher("/init/environment/init.jsp");
-		rd.forward(request, response);
+		
+		if(initDb.create(true)) {
+			out.println("Struttura db e dati creati");
+			return;
+		}
+		
+		out.println("Errore inizializzazione database. Visualizzare il log per maggiori info.");
 	}
 
 	@Override

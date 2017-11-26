@@ -24,12 +24,12 @@ public class PrestitiDaoImpl implements PrestitiDao {
             pst.setInt(1, idUtente);
             ResultSet rs = pst.executeQuery();
 
-            List<Prestito> libri = new ArrayList<>();
+            List<Prestito> prestiti = new ArrayList<>();
             while (rs.next()) {
-                libri.add(fetchResultSet(rs));
+            	prestiti.add(fetchResultSet(rs));
             }
 
-            return libri;
+            return prestiti.size() > 0 ?prestiti : null;
         } catch (SQLException ex) {
             logger.severe(ex.getMessage());
             Database.printSQLException(ex);
@@ -39,10 +39,8 @@ public class PrestitiDaoImpl implements PrestitiDao {
 
         return null;
     }
-
+    
     private Prestito fetchResultSet(ResultSet rs) throws SQLException {
-        rs.next();
-
         int index = 1;
 
         Prestito prestito = new Prestito();
@@ -54,7 +52,6 @@ public class PrestitiDaoImpl implements PrestitiDao {
 
         return prestito;
     }
-
 
     @Override
     public boolean insert() {
@@ -70,5 +67,7 @@ public class PrestitiDaoImpl implements PrestitiDao {
     public boolean delete() {
         return false;
     }
+
+	
 }
 
