@@ -1,4 +1,4 @@
-package servlet;
+package controller;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @WebServlet(name = "Logout", urlPatterns = { "/logout" })
-public class Logout extends HttpServlet {
+public class LogoutController extends HttpServlet {
 	private static final long serialVersionUID = -1389065591634304311L;
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

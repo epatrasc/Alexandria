@@ -1,4 +1,4 @@
-package servlet;
+package controller;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import dao.implement.UtenteDaoImpl;
 import model.Utente;
 
 @WebServlet("/login")
-public class Login extends HttpServlet {
+public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = -1389065591634304311L;
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

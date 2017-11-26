@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlet;
+package controller;
 
 import java.io.IOException;
 
@@ -15,19 +15,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.implement.CatalogoDaoImpl;
-
 @WebServlet(name = "Home", urlPatterns = {"/home"})
-public class Home extends HttpServlet {
+public class HomeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CatalogoDaoImpl catalogo = new CatalogoDaoImpl();
-        request.setAttribute("libri", catalogo.getLibri());
-        
         ServletContext ctx = getServletContext();
-        RequestDispatcher rd = ctx.getRequestDispatcher("/home.jsp");
+        RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo/visualizza");
         rd.forward(request, response);
     }
 
