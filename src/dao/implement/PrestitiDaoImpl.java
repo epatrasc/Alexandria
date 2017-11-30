@@ -1,13 +1,17 @@
 package dao.implement;
 
-import dao.Database;
-import dao.interfaces.PrestitiDao;
-import model.Prestito;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import dao.Database;
+import dao.interfaces.PrestitiDao;
+import model.Prestito;
+import model.SqlError;
 
 public class PrestitiDaoImpl implements PrestitiDao {
     private static final Logger logger = Logger.getLogger(PrestitiDaoImpl.class.getName());
@@ -32,7 +36,7 @@ public class PrestitiDaoImpl implements PrestitiDao {
             return prestiti.size() > 0 ?prestiti : null;
         } catch (SQLException ex) {
             logger.severe(ex.getMessage());
-            Database.printSQLException(ex);
+            Database.printSQLException(new SqlError(ex));
         } finally {
             Database.closeConnection(connection);
         }

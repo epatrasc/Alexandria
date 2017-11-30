@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mysql.jdbc.Driver;
+import model.SqlError;
 
 public class Database {
 	private static final Logger logger = Logger.getLogger(Database.class.getName());
@@ -46,7 +46,7 @@ public class Database {
 
 			logger.info(String.format("Connection number %d estabilisced", totalConnections));
 		} catch (SQLException ex) {
-			printSQLException(ex);
+			printSQLException(new SqlError(ex));
 
 			throw ex;
 		} catch (InstantiationException e) {
@@ -70,15 +70,15 @@ public class Database {
 				totalConnections--;
 				logger.info("Connessione chiusa");
 			} catch (SQLException ex) {
-				printSQLException(ex);
+				printSQLException(new SqlError(ex));
 			}
 		}
 	}
 
-	public static void printSQLException(SQLException ex) {
-		logger.severe("SQLException: " + ex.getMessage());
-		logger.severe("SQLState: " + ex.getSQLState());
-		logger.severe("VendorError: " + ex.getErrorCode());
-		logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+	public static void printSQLException(SqlError error) {
+		logger.severe("SQLException: " + error.getMessage());
+		logger.severe("SQLState: " + error.getSqlState());
+		logger.severe("VendorError: " + error.getErrorCode());
+		logger.log(Level.SEVERE, error.getMessage(), error.getCause());
 	}
 }

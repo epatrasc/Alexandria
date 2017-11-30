@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 import dao.Database;
+import model.SqlError;
 
 public class DatabaseInit {
 	private static final Logger logger = Logger.getLogger(DatabaseInit.class.getName());
@@ -32,7 +33,7 @@ public class DatabaseInit {
 
 			connected = connection != null && !connection.isClosed() ? true : false;
 		} catch (SQLException ex) {
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		}
 	}
 
@@ -61,7 +62,7 @@ public class DatabaseInit {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 			return false;
 			
 		}catch(FileNotFoundException ex) {
@@ -101,7 +102,7 @@ public class DatabaseInit {
 			}
 		} catch (SQLException ex) {
 			if (ex.getSQLState() != "42S02") {
-				Database.printSQLException(ex);
+				Database.printSQLException(new SqlError(ex));
 			}
 		}
 		logger.info("Database non configurato");

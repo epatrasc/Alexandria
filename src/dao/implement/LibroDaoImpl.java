@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import dao.Database;
 import dao.interfaces.LibroDao;
 import model.Libro;
+import model.SqlError;
 
 public class LibroDaoImpl implements LibroDao {
 	private static final Logger logger = Logger.getLogger(LibroDaoImpl.class.getName());
@@ -30,7 +31,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean insert() {
 		Connection connection = null;
-		String query = "INSERT INTO libri (titolo, descrizione, image_url, editore) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO libri (titolo, autori, descrizione, image_url, editore) VALUES (?, ?, ?, ?, ?)";
 
 		try {
 			connection = Database.getConnection();
@@ -41,6 +42,7 @@ public class LibroDaoImpl implements LibroDao {
 			
 			int index = 1;
 			pst.setString(index, libro.getTitolo());
+			pst.setString(index, libro.getAutori());
 			pst.setString(index, libro.getDescrizione());
 			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
@@ -63,7 +65,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -74,7 +76,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE libri set titolo = ?, descrizione = ?, image_url = ?, editore = ?) WHERE id=?";
+		String query = "UPDATE libri set titolo = ?, autori= ?, descrizione = ?, image_url = ?, editore = ?) WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -83,6 +85,7 @@ public class LibroDaoImpl implements LibroDao {
 
 			int index = 1;
 			pst.setString(index, libro.getTitolo());
+			pst.setString(index, libro.getAutori());
 			pst.setString(index, libro.getDescrizione());
 			pst.setString(index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
@@ -97,7 +100,7 @@ public class LibroDaoImpl implements LibroDao {
 			
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -124,7 +127,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -152,7 +155,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -168,7 +171,7 @@ public class LibroDaoImpl implements LibroDao {
 			connection = Database.getConnection();
 
 			PreparedStatement pst = connection
-					.prepareStatement("SELECT id, titolo, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
+					.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
 			pst.clearParameters();
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
@@ -178,7 +181,7 @@ public class LibroDaoImpl implements LibroDao {
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -193,6 +196,7 @@ public class LibroDaoImpl implements LibroDao {
 		
 		Libro libro = new Libro();
 		libro.setId(rs.getInt(index));
+		libro.setTitolo(rs.getString(++index));
 		libro.setTitolo(rs.getString(++index));
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));

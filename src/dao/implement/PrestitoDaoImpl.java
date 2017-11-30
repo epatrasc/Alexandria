@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import dao.Database;
 import dao.interfaces.PrestitoDao;
 import model.Prestito;
+import model.SqlError;
 
 public class PrestitoDaoImpl implements PrestitoDao {
 	private static final Logger logger = Logger.getLogger(PrestitoDaoImpl.class.getName());
@@ -60,7 +61,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 			return false;
 		} finally {
 			Database.closeConnection(connection);
@@ -91,7 +92,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 			return false;
 		} finally {
 			Database.closeConnection(connection);
@@ -123,7 +124,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 			return null;
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -151,7 +152,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
-			Database.printSQLException(ex);
+			Database.printSQLException(new SqlError(ex));
 			return false;
 		} finally {
 			Database.closeConnection(connection);

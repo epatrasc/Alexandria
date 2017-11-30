@@ -7,7 +7,7 @@ public class Libro {
 	private String titolo;
 	private String descrizione;
 	private String imageUrl;
-	private List<Integer> autori;
+	private String autori;
 	private String editore;
 
 	public Libro() {
@@ -33,11 +33,11 @@ public class Libro {
 		this.titolo = titolo;
 	}
 
-	public List<Integer> getAutori() {
+	public String getAutori() {
 		return autori;
 	}
 
-	public void setAutori(List<Integer> autori) {
+	public void setAutori(String autori) {
 		this.autori = autori;
 	}
 
