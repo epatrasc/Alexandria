@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import dao.implement.CatalogoDaoImpl;
+import model.Libro;
 import model.Utente;
 
 @WebServlet("/catalogo/*")
@@ -28,14 +30,16 @@ public class CatalogoController extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 
-		CatalogoDaoImpl catalogo = new CatalogoDaoImpl();
-		request.setAttribute("libri", catalogo.getLibri());
-
 		String action = request.getPathInfo().substring(1);
 		HttpSession session = request.getSession();
 
 		utente = (Utente) session.getAttribute("utente");
-
+		
+		CatalogoDaoImpl catalogo = new CatalogoDaoImpl();
+		
+		List<Libro> libri = utente !=null && utente.isCliente() ? catalogo.getLibriDisponibili() : catalogo.getLibri();
+		request.setAttribute("libri", libri);
+		
 		Method doAction;
 		try {
 			doAction = CatalogoController.class.getMethod(action, HttpServletRequest.class, HttpServletResponse.class);

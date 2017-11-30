@@ -15,7 +15,7 @@ import model.SqlError;
 public class LibroDaoImpl implements LibroDao {
 	private static final Logger logger = Logger.getLogger(LibroDaoImpl.class.getName());
 	private Libro libro;
-	
+
 	public LibroDaoImpl(int id) {
 		this.libro = new Libro(id);
 	}
@@ -27,7 +27,7 @@ public class LibroDaoImpl implements LibroDao {
 			throw new IllegalArgumentException("Libro non inzializzato, passare un libro valido");
 		}
 	}
-	
+
 	@Override
 	public boolean insert() {
 		Connection connection = null;
@@ -35,11 +35,9 @@ public class LibroDaoImpl implements LibroDao {
 
 		try {
 			connection = Database.getConnection();
-			
-			
-			
+
 			PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			
+
 			int index = 1;
 			pst.setString(index, libro.getTitolo());
 			pst.setString(index, libro.getAutori());
@@ -60,8 +58,6 @@ public class LibroDaoImpl implements LibroDao {
 
 				libro.setId(generatedKeys.getInt(1));
 			}
-			
-			// TODO inserire gli autori
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
@@ -95,9 +91,7 @@ public class LibroDaoImpl implements LibroDao {
 				logger.info("Update libro failed, no rows affected.");
 				return false;
 			}
-			
-			// TODO aggiornare gli autori
-			
+
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
 			Database.printSQLException(new SqlError(ex));
@@ -134,11 +128,11 @@ public class LibroDaoImpl implements LibroDao {
 
 		return true;
 	}
-	
+
 	public boolean exists() {
 		return exists(libro.getId());
 	}
-	
+
 	public boolean exists(int id) {
 		Connection connection = null;
 
@@ -147,7 +141,7 @@ public class LibroDaoImpl implements LibroDao {
 
 			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id_libro = ?");
 			pst.setInt(1, id);
-			
+
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
 				return rs.getInt(1) > 0 ? true : false;
@@ -162,7 +156,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		return false;
 	}
-	
+
 	@Override
 	public Libro getLibroById(int id) {
 		Connection connection = null;
@@ -170,14 +164,13 @@ public class LibroDaoImpl implements LibroDao {
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection
-					.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
+			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
 			pst.clearParameters();
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
-			
+
 			// TODO retrieve lista autori
-			
+
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
@@ -191,9 +184,9 @@ public class LibroDaoImpl implements LibroDao {
 
 	private Libro fetchResultSet(ResultSet rs) throws SQLException {
 		rs.next();
-		
+
 		int index = 1;
-		
+
 		Libro libro = new Libro();
 		libro.setId(rs.getInt(index));
 		libro.setTitolo(rs.getString(++index));

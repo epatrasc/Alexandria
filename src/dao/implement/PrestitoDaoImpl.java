@@ -44,24 +44,38 @@ public class PrestitoDaoImpl implements PrestitoDao {
 	@Override
 	public boolean insert() {
 		Connection connection = null;
-		String query = "INSERT INTO prestiti (id_utente, id_libro) VALUES (?, ?)";
+		String queryAddPestito = "INSERT INTO prestiti (id_utente, id_libro) VALUES (?, ?)";
+		String queryUpdateLibro = "UPDATE libri set disponibile = false where id = ?";
 
 		try {
 			connection = Database.getConnection();
-
-			PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
+			connection.setAutoCommit(false);
+			
+			PreparedStatement pst = connection.prepareStatement(queryAddPestito, Statement.RETURN_GENERATED_KEYS);
 			pst.setInt(1, prestito.getIdUtente());
 			pst.setInt(2, prestito.getIdLibro());
-
+			
 			if (pst.executeUpdate() == 0) {
 				logger.info("Creating prestito failed, no rows affected.");
+				connection.rollback();
+				return false;
+			}
+			
+			pst = connection.prepareStatement(queryUpdateLibro);
+			pst.setInt(1, prestito.getIdLibro());
+
+			if(pst.executeLargeUpdate(queryUpdateLibro) != 1){
+				logger.info("Updating libro failed, no rows affected.");
+				connection.rollback();
 				return false;
 			}
 
+			connection.commit();
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());
 			Database.printSQLException(new SqlError(ex));
+			try { connection.commit(); } catch (SQLException e) { e.printStackTrace(); }
+
 			return false;
 		} finally {
 			Database.closeConnection(connection);
@@ -73,22 +87,31 @@ public class PrestitoDaoImpl implements PrestitoDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE prestiti set data_restituzione = CURRENT_TIMESTAMP, restituito = true WHERE id_utente = ? and id_libro = ?";
+		String queryUpdatePrestito = "UPDATE prestiti set data_restituzione = CURRENT_TIMESTAMP, restituito = true WHERE id_utente = ? and id_libro = ?";
+		String queryUpdateLibro = "UPDATE libri set disponibile = true WHERE id = ?";
 
 		try {
 			connection = Database.getConnection();
-
-			PreparedStatement pst = connection.prepareStatement(query);
-
+			connection.setAutoCommit(false);
+			
+			PreparedStatement pst = connection.prepareStatement(queryUpdatePrestito);
 			pst.setInt(1, prestito.getIdUtente());
 			pst.setInt(2, prestito.getIdLibro());
 
 			if (pst.executeUpdate() == 0) {
 				logger.info("Update prestito failed, no rows affected.");
+				connection.rollback();
 				return false;
 			}
-
-			// TODO aggiornare gli autori
+			
+			pst = connection.prepareStatement(queryUpdateLibro);
+			pst.setInt(1, prestito.getIdLibro());
+			
+			if(pst.executeLargeUpdate(queryUpdateLibro) != 1){
+				logger.info("Updating libro failed, no rows affected.");
+				connection.rollback();
+				return false;
+			}
 
 		} catch (SQLException ex) {
 			logger.severe(ex.getMessage());

@@ -21,8 +21,8 @@ public class CatalogoDaoImpl implements CatalogoDao {
 
 		try {
 			connection = Database.getConnection();
-
-			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, descrizione, image_url, editore FROM libri WHERE cancellato is not true and disponibile is true");
+			
+			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore FROM libri");
 			ResultSet rs = pst.executeQuery();
 
 			List<Libro> libri = new ArrayList<>();
@@ -40,13 +40,44 @@ public class CatalogoDaoImpl implements CatalogoDao {
 
 		return null;
 	}
+	
+	@Override
+	public List<Libro> getLibriDisponibili() {
+		Connection connection = null;
 
+		try {
+			connection = Database.getConnection();
+			
+			String query = new StringBuffer()
+					.append("SELECT id, titolo, autori, descrizione, image_url, editore")
+					.append("FROM libri WHERE cancellato is not true and disponibile is true").toString();
+			
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+
+			List<Libro> libri = new ArrayList<>();
+			while (rs.next()) {
+				libri.add(fetchResultSet(rs));
+			}
+			
+			return libri;
+		} catch (SQLException ex) {
+			logger.severe(ex.getMessage());
+			Database.printSQLException(new SqlError(ex));
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return null;
+	}
+	
 	private Libro fetchResultSet(ResultSet rs) throws SQLException {
 		int index = 1;
 
 		Libro libro = new Libro();
 		libro.setId(rs.getInt(index));
 		libro.setTitolo(rs.getString(++index));
+		libro.setAutori(rs.getString(++index));
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));

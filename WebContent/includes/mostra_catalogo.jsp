@@ -8,8 +8,8 @@
 	        <img class="card-img-top" src="${libro.imageUrl}" alt="${libro.titolo}">
 	        <div class="card-body">
 	            <h4 class="card-title">${libro.titolo}</h4>
-	            <p class="card-text">${libro.descrizione}</p>
 	            <p class="card-text">${libro.autori}</p>
+	            <p class="card-text">${libro.descrizione}</p>
 	            <p class="card-text"><b>${libro.editore}</b></p>
 	        </div>
 	        <c:if test="${utente != null}">

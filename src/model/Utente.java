@@ -54,7 +54,15 @@ public class Utente {
 			this.ruolo = ruolo;
 		}
 	}
-
+	
+	public boolean isAmministratore() {
+		return ruolo == "amministratore";
+	}
+	
+	public boolean isCliente() {
+		return ruolo == "cliente";
+	}
+	
 	public boolean isAttivo() {
 		return attivo;
 	}
