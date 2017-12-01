@@ -5,15 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import dao.Database;
 import dao.interfaces.UtenteDao;
 import model.Utente;
 
 public class UtenteDaoImpl implements UtenteDao {
-	private static final Logger logger = Logger.getLogger(UtenteDaoImpl.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private Utente utente;
 
 	public UtenteDaoImpl() {
@@ -73,12 +74,8 @@ public class UtenteDaoImpl implements UtenteDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			logger.severe("SQLException: " + ex.getMessage());
-			logger.severe("SQLState: " + ex.getSQLState());
-			logger.severe("VendorError: " + ex.getErrorCode());
-			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
-			;
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -107,12 +104,8 @@ public class UtenteDaoImpl implements UtenteDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			logger.severe("SQLException: " + ex.getMessage());
-			logger.severe("SQLState: " + ex.getSQLState());
-			logger.severe("VendorError: " + ex.getErrorCode());
-			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
-			;
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -137,12 +130,8 @@ public class UtenteDaoImpl implements UtenteDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			logger.severe("SQLException: " + ex.getMessage());
-			logger.severe("SQLState: " + ex.getSQLState());
-			logger.severe("VendorError: " + ex.getErrorCode());
-			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
-			;
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -163,11 +152,8 @@ public class UtenteDaoImpl implements UtenteDao {
 
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			logger.severe("SQLException: " + ex.getMessage());
-			logger.severe("SQLState: " + ex.getSQLState());
-			logger.severe("VendorError: " + ex.getErrorCode());
-			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -189,11 +175,8 @@ public class UtenteDaoImpl implements UtenteDao {
 
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			logger.severe("SQLException: " + ex.getMessage());
-			logger.severe("SQLState: " + ex.getSQLState());
-			logger.severe("VendorError: " + ex.getErrorCode());
-			logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}

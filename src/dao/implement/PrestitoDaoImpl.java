@@ -5,15 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import dao.Database;
 import dao.interfaces.PrestitoDao;
 import model.Prestito;
-import model.SqlError;
 
 public class PrestitoDaoImpl implements PrestitoDao {
-	private static final Logger logger = Logger.getLogger(PrestitoDaoImpl.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private Prestito prestito;
 
 	public PrestitoDaoImpl() {
@@ -60,21 +61,22 @@ public class PrestitoDaoImpl implements PrestitoDao {
 				connection.rollback();
 				return false;
 			}
-			
+			pst.clearParameters();
 			pst = connection.prepareStatement(queryUpdateLibro);
 			pst.setInt(1, prestito.getIdLibro());
 
-			if(pst.executeLargeUpdate(queryUpdateLibro) != 1){
+			if(pst.executeUpdate() != 1){
 				logger.info("Updating libro failed, no rows affected.");
 				connection.rollback();
 				return false;
 			}
 
+			logger.info(String.format("Inserito un nuovo prestito idUtente: %d, idLibro: %d", prestito.getIdUtente(), prestito.getIdLibro()));
 			connection.commit();
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
-			try { connection.commit(); } catch (SQLException e) { e.printStackTrace(); }
+			try { connection.rollback(); } catch (SQLException e) { e.printStackTrace(); }
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(),ex);
 
 			return false;
 		} finally {
@@ -104,18 +106,20 @@ public class PrestitoDaoImpl implements PrestitoDao {
 				return false;
 			}
 			
+			pst.clearParameters();
 			pst = connection.prepareStatement(queryUpdateLibro);
 			pst.setInt(1, prestito.getIdLibro());
 			
-			if(pst.executeLargeUpdate(queryUpdateLibro) != 1){
+			if(pst.executeUpdate() != 1){
 				logger.info("Updating libro failed, no rows affected.");
 				connection.rollback();
 				return false;
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			try { connection.rollback(); } catch (SQLException e) { e.printStackTrace(); }
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(),ex);
 			return false;
 		} finally {
 			Database.closeConnection(connection);
@@ -146,8 +150,8 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 			return null;
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(),ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -174,8 +178,8 @@ public class PrestitoDaoImpl implements PrestitoDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(),ex);
 			return false;
 		} finally {
 			Database.closeConnection(connection);

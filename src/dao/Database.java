@@ -3,13 +3,12 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import model.SqlError;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Database {
-	private static final Logger logger = Logger.getLogger(Database.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private static final String CONNECTION_STRING = "jdbc:mysql://localhost/alexandria";
 	private static final String CONNECTION_USER = "root";
 	private static final String CONNECTION_PSW = "root";
@@ -46,7 +45,7 @@ public class Database {
 
 			logger.info(String.format("Connection number %d estabilisced", totalConnections));
 		} catch (SQLException ex) {
-			printSQLException(new SqlError(ex));
+			printSQLException(ex);
 
 			throw ex;
 		} catch (InstantiationException e) {
@@ -70,15 +69,14 @@ public class Database {
 				totalConnections--;
 				logger.info("Connessione chiusa");
 			} catch (SQLException ex) {
-				printSQLException(new SqlError(ex));
+				printSQLException(ex);
 			}
 		}
 	}
 
-	public static void printSQLException(SqlError error) {
-		logger.severe("SQLException: " + error.getMessage());
-		logger.severe("SQLState: " + error.getSqlState());
-		logger.severe("VendorError: " + error.getErrorCode());
-		logger.log(Level.SEVERE, error.getMessage(), error.getCause());
+	public static void printSQLException(SQLException ex) {
+		logger.error("SQLException: " + ex.getMessage());
+		logger.error("SQLState: " + ex.getSQLState());
+		logger.error("VendorError: " + ex.getErrorCode());
 	}
 }

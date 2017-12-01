@@ -5,15 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import dao.Database;
 import dao.interfaces.LibroDao;
 import model.Libro;
-import model.SqlError;
 
 public class LibroDaoImpl implements LibroDao {
-	private static final Logger logger = Logger.getLogger(LibroDaoImpl.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private Libro libro;
 
 	public LibroDaoImpl(int id) {
@@ -60,8 +61,8 @@ public class LibroDaoImpl implements LibroDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -93,8 +94,8 @@ public class LibroDaoImpl implements LibroDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -120,8 +121,8 @@ public class LibroDaoImpl implements LibroDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -148,8 +149,8 @@ public class LibroDaoImpl implements LibroDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -173,8 +174,8 @@ public class LibroDaoImpl implements LibroDao {
 
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex);
 		} finally {
 			Database.closeConnection(connection);
 		}

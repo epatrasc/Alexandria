@@ -6,15 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import dao.Database;
 import dao.interfaces.CatalogoDao;
 import model.Libro;
-import model.SqlError;
 
 public class CatalogoDaoImpl implements CatalogoDao {
-	private static final Logger logger = Logger.getLogger(CatalogoDaoImpl.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 
 	public List<Libro> getLibri() {
 		Connection connection = null;
@@ -32,8 +33,8 @@ public class CatalogoDaoImpl implements CatalogoDao {
 			
 			return libri;
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex.getStackTrace());
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -62,8 +63,8 @@ public class CatalogoDaoImpl implements CatalogoDao {
 			
 			return libri;
 		} catch (SQLException ex) {
-			logger.severe(ex.getMessage());
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
+			logger.error(ex.getStackTrace());
 		} finally {
 			Database.closeConnection(connection);
 		}

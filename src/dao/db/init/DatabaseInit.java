@@ -2,22 +2,23 @@ package dao.db.init;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import dao.Database;
-import model.SqlError;
 
 public class DatabaseInit {
-	private static final Logger logger = Logger.getLogger(DatabaseInit.class.getName());
+	private static final Logger logger = LogManager.getLogger(new Object() {
+	}.getClass().getEnclosingClass());
 	private static final String DB_FILE_INIT = "/init/environment/init_db.sql";
 	private static final String DATA_FILE_INIT = "/init/environment/init_data.sql";
 	private Connection connection;
@@ -33,7 +34,7 @@ public class DatabaseInit {
 
 			connected = connection != null && !connection.isClosed() ? true : false;
 		} catch (SQLException ex) {
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
 		}
 	}
 
@@ -62,13 +63,12 @@ public class DatabaseInit {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			Database.printSQLException(new SqlError(ex));
+			Database.printSQLException(ex);
 			return false;
-			
-		}catch(FileNotFoundException ex) {
+
+		} catch (FileNotFoundException ex) {
 			return false;
-		}
-		finally {
+		} finally {
 			Database.closeConnection(connection);
 		}
 
@@ -77,10 +77,10 @@ public class DatabaseInit {
 
 	private boolean execScript(Connection connection, String scriptSQL) throws SQLException {
 		PreparedStatement pst;
-		logger.fine("Esecuzione commandi:");
+		logger.debug("Esecuzione commandi:");
 		for (String command : scriptSQL.split(";")) {
 			command = command.trim().replace("\n", "");
-			logger.fine(command);
+			logger.debug(command);
 			if (!command.isEmpty()) {
 				logger.info("command:" + command);
 				pst = connection.prepareStatement(command);
@@ -102,7 +102,7 @@ public class DatabaseInit {
 			}
 		} catch (SQLException ex) {
 			if (ex.getSQLState() != "42S02") {
-				Database.printSQLException(new SqlError(ex));
+				Database.printSQLException(ex);
 			}
 		}
 		logger.info("Database non configurato");
