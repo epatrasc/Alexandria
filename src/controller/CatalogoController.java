@@ -46,7 +46,7 @@ public class CatalogoController extends HttpServlet {
 			doAction.invoke(this, request, response);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
-			response.sendError(500);
+			response.sendError(404);
 		}
 	}
 
@@ -55,19 +55,12 @@ public class CatalogoController extends HttpServlet {
 		RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo.jsp");
 		rd.forward(request, response);
 	}
-
-	public void modifica(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServletContext ctx = getServletContext();
-		RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo.jsp");
-		rd.forward(request, response);
-	}
 	
 	public void aggiungi(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServletContext ctx = getServletContext();
-		RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo.jsp");
-		rd.forward(request, response);
+		HttpSession session = request.getSession();
+		response.sendRedirect(request.getContextPath() + "/libro/aggiungi");
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}

@@ -2,11 +2,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 <script>var contextPath = "${pageContext.request.contextPath}"</script>
-<script src="<c:url value="/script/custom.js" />"></script>
-<script type="text/javascript">
-function checkSession() {
-	// TODO
-}
-
-//setInterval(checkSession(),1000);
-</script>
+<script src="<c:url value="/script/common/index.js" />"></script>

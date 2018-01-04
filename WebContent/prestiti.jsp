@@ -31,6 +31,7 @@
 		</div>
 	</div>
 	<%@include file="/includes/footer.jsp"%>
+	<script src="<c:url value="/script/prestito/prestito.js" />"></script>
 </body>
 </html>
 

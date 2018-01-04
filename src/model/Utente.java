@@ -10,7 +10,7 @@ public class Utente {
 	private boolean attivo;
 
 	private enum Ruoli {
-		cliente, amministratore
+		cliente, amministratore;
 	}
 	
 	public Utente() {
@@ -56,11 +56,11 @@ public class Utente {
 	}
 	
 	public boolean isAmministratore() {
-		return ruolo == "amministratore";
+		return ruolo == Ruoli.amministratore.toString();
 	}
 	
 	public boolean isCliente() {
-		return ruolo == "cliente";
+		return ruolo == Ruoli.cliente.toString();
 	}
 	
 	public boolean isAttivo() {
@@ -69,5 +69,13 @@ public class Utente {
 
 	public void setAttivo(boolean attivo) {
 		this.attivo = attivo;
+	}
+	
+	public static String amministratore(){
+		return Ruoli.amministratore.toString();
+	}
+	
+	public static String cliente(){
+		return Ruoli.cliente.toString();
 	}
 }

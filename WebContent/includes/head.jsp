@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="description" content="Library of Alexandria">
     <meta name="author" content="Emilian Patrasc">
-    <link rel="icon" href="images/icon/favicon.png">
+    <link rel="icon" href="<c:url value="/images/icon/favicon.png"/>">
     
 	<title>Library of Alexandria</title>
 	

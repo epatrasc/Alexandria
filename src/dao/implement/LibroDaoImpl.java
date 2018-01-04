@@ -16,7 +16,7 @@ import model.Libro;
 public class LibroDaoImpl implements LibroDao {
 	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private Libro libro;
-
+	
 	public LibroDaoImpl(int id) {
 		this.libro = new Libro(id);
 	}
@@ -39,11 +39,11 @@ public class LibroDaoImpl implements LibroDao {
 
 			PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-			int index = 1;
-			pst.setString(index, libro.getTitolo());
-			pst.setString(index, libro.getAutori());
-			pst.setString(index, libro.getDescrizione());
-			pst.setString(index, libro.getImageUrl());
+			int index = 0;
+			pst.setString(++index, libro.getTitolo());
+			pst.setString(++index, libro.getAutori());
+			pst.setString(++index, libro.getDescrizione());
+			pst.setString(++index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
 
 			if (pst.executeUpdate() == 0) {
@@ -62,7 +62,8 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex);
+			logger.error(ex.getMessage(),ex);
+			return false;
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -95,7 +96,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex);
+			logger.error(ex.getMessage(),ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -122,7 +123,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex);
+			logger.error(ex.getMessage(),ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -133,7 +134,35 @@ public class LibroDaoImpl implements LibroDao {
 	public boolean exists() {
 		return exists(libro.getId());
 	}
+	
+	public boolean existsByTitolo() {
+		return exists(libro.getTitolo());
+	}
+	
+	public boolean exists(String titolo) {
+		Connection connection = null;
 
+		try {
+			connection = Database.getConnection();
+
+			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where titolo = ?");
+			pst.setString(1, titolo);
+
+			ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0 ? true : false;
+			}
+
+		} catch (SQLException ex) {
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(),ex);
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return false;
+	}
+	
 	public boolean exists(int id) {
 		Connection connection = null;
 
@@ -150,7 +179,7 @@ public class LibroDaoImpl implements LibroDao {
 
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex);
+			logger.error(ex.getMessage(),ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -159,7 +188,7 @@ public class LibroDaoImpl implements LibroDao {
 	}
 
 	@Override
-	public Libro getLibroById(int id) {
+	public Libro getLibro() {
 		Connection connection = null;
 
 		try {
@@ -167,15 +196,13 @@ public class LibroDaoImpl implements LibroDao {
 
 			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
 			pst.clearParameters();
-			pst.setInt(1, id);
+			pst.setInt(1, libro.getId());
 			ResultSet rs = pst.executeQuery();
-
-			// TODO retrieve lista autori
 
 			return fetchResultSet(rs);
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex);
+			logger.error(ex.getMessage(),ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
