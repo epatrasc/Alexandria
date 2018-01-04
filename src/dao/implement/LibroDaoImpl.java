@@ -97,6 +97,7 @@ public class LibroDaoImpl implements LibroDao {
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
 			logger.error(ex.getMessage(),ex);
+			return false;
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -156,6 +157,7 @@ public class LibroDaoImpl implements LibroDao {
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
 			logger.error(ex.getMessage(),ex);
+			return false;
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -169,7 +171,7 @@ public class LibroDaoImpl implements LibroDao {
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id_libro = ?");
+			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id = ?");
 			pst.setInt(1, id);
 
 			ResultSet rs = pst.executeQuery();

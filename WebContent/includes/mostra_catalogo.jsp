@@ -39,4 +39,4 @@
 </c:if>
 </c:forEach>
 </div>
-
+<script src="<c:url value="/script/prestito/prestito.js" />"></script>

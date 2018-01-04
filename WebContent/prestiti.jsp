@@ -11,7 +11,7 @@
 					<tr>
 						<th>Libro</th>
 						<th>Data Prestito</th>
-						<th>Data Data Restituzione</th>
+						<th>Data Restituzione</th>
 						<th> </th>
 					</tr>
 					<c:forEach var="prestiti" items="${requestScope.listaPrestiti}"

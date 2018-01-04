@@ -10,8 +10,8 @@ Libro.aggiungi = () => {
   
   xhttp.open("POST", contextPath + url, true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.onload = handleResponse;
-  xhttp.onerror = handleError
+  xhttp.onload = handleResponseLibro;
+  xhttp.onerror = handleError;
   xhttp.send(params);
 };
 
@@ -32,7 +32,7 @@ $("#aggiungiLibro").submit(function(e) {
   return false;
 });
 
-const handleResponse = () => {
+const handleResponseLibro = () => {
     const response = parseResponse(xhttp.responseText);
 
     if (response && response.done) {

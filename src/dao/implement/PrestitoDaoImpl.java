@@ -115,7 +115,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 				connection.rollback();
 				return false;
 			}
-
+			connection.commit();
 		} catch (SQLException ex) {
 			try { connection.rollback(); } catch (SQLException e) { e.printStackTrace(); }
 			Database.printSQLException(ex);
@@ -124,7 +124,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 		} finally {
 			Database.closeConnection(connection);
 		}
-
+		
 		return true;
 	}
 
