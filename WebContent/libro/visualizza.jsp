@@ -11,10 +11,11 @@
 	readonly />
 
 <label for="url" class="sr-only">Copertina</label>
-<input id="url" type="text" name="url" value="${libro.url}"
+<input id="url" type="text" name="url" value="${libro.imageUrl}"
 	readonly />
 
 <label for="descrizione" class="sr-only">Descrizione</label>
 <textarea id="descrizione" type="" name="descrizione" size="45" readonly>
     	${libro.descrizione}
 </textarea>
+<input id="idLibro" type="hidden" name="idLibro" value="${libro.id}">

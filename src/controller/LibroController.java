@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
@@ -42,12 +43,18 @@ public class LibroController extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 
 		String action = request.getPathInfo().substring(1);
+
 		HttpSession session = request.getSession();
 
 		utente = (Utente) session.getAttribute("utente");
 
 		if (!hasRights(utente, action)) {
-			logger.info(String.format("Utente %d non ha accesso all'azione %s", utente.getId(), action));
+			if (utente != null) {
+				logger.info(String.format("Utente %d non ha accesso all'azione %s", utente.getId(), action));
+			} else {
+				logger.info(String.format("Utente non loggato e non autorizzato all'azione %s", action));
+			}
+
 			response.sendError(403, "Accesso negato");
 			return;
 		}
@@ -65,7 +72,7 @@ public class LibroController extends HttpServlet {
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd;
 		ServletContext ctx = getServletContext();
-		int idLibro = getIdLibro(request.getPathInfo());
+		int idLibro = Integer.parseInt(request.getParameter("idLibro"));
 
 		if (idLibro == 0) {
 			// invalid parameter
@@ -102,7 +109,7 @@ public class LibroController extends HttpServlet {
 	public void modifica(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd;
 		ServletContext ctx = getServletContext();
-		int idLibro = getIdLibro(request.getPathInfo());
+		int idLibro = Integer.parseInt(request.getParameter("idLibro"));
 
 		if (idLibro == 0) {
 			// invalid parameter
@@ -144,6 +151,38 @@ public class LibroController extends HttpServlet {
 		rd.forward(request, response);
 	}
 
+	public void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		out = response.getWriter();
+
+		Libro libro = new Libro();
+		libro.setId(Integer.parseInt(request.getParameter("idLibro")));
+		libro.setTitolo(request.getParameter("titolo"));
+		libro.setAutori(request.getParameter("autori"));
+		libro.setEditore(request.getParameter("editore"));
+		libro.setImageUrl(request.getParameter("url"));
+		libro.setDescrizione(request.getParameter("descrizione"));
+
+		if (!isValid(libro)) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, "Parametri input non validi")));
+			return;
+		}
+
+		LibroDaoImpl libroDao = new LibroDaoImpl(libro);
+
+		if (!libroDao.exists()) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con id '%s' non presente a catalogo", libro.getTitolo()))));
+			return;
+		}
+
+		if (!libroDao.update()) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, "Errore durante il tentativo di modifica del libro a catalogo, con id" + libro.getId())));
+			return;
+		}
+
+		out.println(JSONMan.serializeJson(new StatusResponse(true, "Libro modificato con successo!", Integer.toString(libro.getId()))));
+		return;
+	}
+
 	public void insert(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
 
@@ -162,7 +201,7 @@ public class LibroController extends HttpServlet {
 		LibroDaoImpl libroDao = new LibroDaoImpl(libro);
 
 		if (libroDao.existsByTitolo()) {
-			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con titolo %s gia' presente a catalogo.", libro.getTitolo()))));
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con titolo '%s' gia' presente a catalogo.", libro.getTitolo()))));
 			return;
 		}
 
@@ -171,7 +210,7 @@ public class LibroController extends HttpServlet {
 			return;
 		}
 
-		out.println(JSONMan.serializeJson(new StatusResponse(true, "Libro aggiunto al catalogo!")));
+		out.println(JSONMan.serializeJson(new StatusResponse(true, "Libro aggiunto al catalogo!", Integer.toString(libro.getId()))));
 		return;
 	}
 
@@ -205,14 +244,6 @@ public class LibroController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
-	}
-
-	private int getIdLibro(String pathInfo) {
-		try {
-			return Integer.parseInt(pathInfo.substring(2));
-		} catch (NumberFormatException ex) {
-			return 0;
-		}
 	}
 
 	private Libro getLibro(int idLibro) {

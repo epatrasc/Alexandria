@@ -26,7 +26,7 @@
 								test="${utente != null && utente.ruolo == 'amministratore'}">
 								<button id="modifica" class="btn btn-lg btn-primary btn-block"
 									type="submit">
-									<a href="<c:url value="/libro/modifica/${libro.id}" />">Modifica</a>
+									<a href="<c:url value="/libro/modifica?idLibro=${libro.id}" />">Modifica</a>
 								</button>
 							</c:if>
 						</div>

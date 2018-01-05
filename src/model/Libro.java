@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 public class Libro {
 	private int id;
 	private String titolo;

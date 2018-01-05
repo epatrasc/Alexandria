@@ -74,18 +74,18 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String query = "UPDATE libri set titolo = ?, autori= ?, descrizione = ?, image_url = ?, editore = ?) WHERE id=?";
+		String query = "UPDATE libri set titolo = ?, autori= ?, descrizione = ?, image_url = ?, editore = ? WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
 
 			PreparedStatement pst = connection.prepareStatement(query);
 
-			int index = 1;
-			pst.setString(index, libro.getTitolo());
-			pst.setString(index, libro.getAutori());
-			pst.setString(index, libro.getDescrizione());
-			pst.setString(index, libro.getImageUrl());
+			int index = 0;
+			pst.setString(++index, libro.getTitolo());
+			pst.setString(++index, libro.getAutori());
+			pst.setString(++index, libro.getDescrizione());
+			pst.setString(++index, libro.getImageUrl());
 			pst.setString(++index, libro.getEditore());
 			pst.setInt(++index, libro.getId());
 
@@ -220,7 +220,7 @@ public class LibroDaoImpl implements LibroDao {
 		Libro libro = new Libro();
 		libro.setId(rs.getInt(index));
 		libro.setTitolo(rs.getString(++index));
-		libro.setTitolo(rs.getString(++index));
+		libro.setAutori(rs.getString(++index));
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));

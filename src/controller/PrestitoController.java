@@ -64,7 +64,7 @@ public class PrestitoController extends HttpServlet {
 		
 		prestito = new PrestitoDaoImpl(utente.getId(), idLibro);
 		if (prestito.exists()) {
-			out.println(JSONMan.serializeJson(new StatusResponse(false, "Hai gia' preso in prestito questo libro")));
+			out.println(JSONMan.serializeJson(new StatusResponse(false, "Libro non disponibile")));
 			return;
 		}
 
@@ -79,7 +79,7 @@ public class PrestitoController extends HttpServlet {
 	private void restituisci() {
 		prestito = new PrestitoDaoImpl(utente.getId(), idLibro);
 		if (!prestito.exists()) {
-			out.println(JSONMan.serializeJson(new StatusResponse(false, "Hai gia' restituito questo libro")));
+			out.println(JSONMan.serializeJson(new StatusResponse(false, "Libro gia' restituito")));
 			return;
 		}
 
