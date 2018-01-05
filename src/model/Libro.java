@@ -7,7 +7,8 @@ public class Libro {
 	private String imageUrl;
 	private String autori;
 	private String editore;
-
+	private boolean disponibile;
+	
 	public Libro() {
 	}
 
@@ -61,5 +62,13 @@ public class Libro {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public boolean isDisponibile() {
+		return disponibile;
+	}
+
+	public void setDisponibile(boolean disponibile) {
+		this.disponibile = disponibile;
 	}
 }

@@ -23,7 +23,7 @@ public class CatalogoDaoImpl implements CatalogoDao {
 		try {
 			connection = Database.getConnection();
 			
-			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore FROM libri");
+			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile FROM libri");
 			ResultSet rs = pst.executeQuery();
 
 			List<Libro> libri = new ArrayList<>();
@@ -50,7 +50,7 @@ public class CatalogoDaoImpl implements CatalogoDao {
 			connection = Database.getConnection();
 			
 			String query = new StringBuffer()
-					.append("SELECT id, titolo, autori, descrizione, image_url, editore")
+					.append("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile")
 					.append("FROM libri WHERE cancellato is not true and disponibile is true").toString();
 			
 			PreparedStatement pst = connection.prepareStatement(query);
@@ -82,7 +82,7 @@ public class CatalogoDaoImpl implements CatalogoDao {
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));
-
+		libro.setDisponibile(rs.getBoolean(++index));
 		return libro;
 	}
 }

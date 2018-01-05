@@ -196,7 +196,7 @@ public class LibroDaoImpl implements LibroDao {
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, cancellato, disponibile FROM libri WHERE id=?");
+			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile, cancellato FROM libri WHERE id=?");
 			pst.clearParameters();
 			pst.setInt(1, libro.getId());
 			ResultSet rs = pst.executeQuery();
@@ -224,6 +224,7 @@ public class LibroDaoImpl implements LibroDao {
 		libro.setDescrizione(rs.getString(++index));
 		libro.setImageUrl(rs.getString(++index));
 		libro.setEditore(rs.getString(++index));
+		libro.setDisponibile(rs.getBoolean(++index));
 
 		return libro;
 	}

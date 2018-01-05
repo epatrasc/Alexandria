@@ -23,9 +23,9 @@
                     	<c:if test="${utente != null}">
                             <a class="dropdown-item" href="<c:url value="/catalogo/visualizza" />">Visualizza</a>
                         </c:if>
-                        <c:if test="${utente != null && utente.ruolo == 'amministratore'}">
-                            <a class="dropdown-item" href="<c:url value="/catalogo/modifica" />">Modifica</a>
-                        </c:if>
+<%--                         <c:if test="${utente != null && utente.ruolo == 'amministratore'}"> --%>
+<%--                             <a class="dropdown-item" href="<c:url value="/catalogo/modifica" />">Modifica</a> --%>
+<%--                         </c:if> --%>
                         <c:if test="${utente != null && utente.ruolo == 'amministratore'}">
                             <a class="dropdown-item" href="<c:url value="/catalogo/aggiungi" />">Aggiungi</a>
                         </c:if>

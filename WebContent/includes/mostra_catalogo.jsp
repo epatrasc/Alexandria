@@ -19,16 +19,18 @@
 					</div>
 					<c:if test="${utente != null}">
 						<div class="card-footer">
+						<div>${libro.disponibile}</div>
+						<c:if test="${libro.disponibile}">
 							<button id="presta" onclick="Prestito.presta(${libro.id})"
-								class="btn btn-lg btn-primary btn-block" type="submit">Prendi
-								in prestito</button>
-							<c:if
-								test="${utente != null && utente.ruolo == 'amministratore'}">
-								<button id="modifica" class="btn btn-lg btn-primary btn-block"
-									type="submit">
-									<a href="<c:url value="/libro/modifica?idLibro=${libro.id}" />">Modifica</a>
-								</button>
-							</c:if>
+								class="btn btn-lg btn-primary btn-block" type="submit">Prendi in prestito
+							</button>
+						</c:if>
+						<c:if test="${utente.ruolo == 'amministratore'}">
+							<button id="modifica" class="btn btn-lg btn-primary btn-block"
+								type="submit">
+								<a href="<c:url value="/libro/modifica?idLibro=${libro.id}" />">Modifica</a>
+							</button>
+						</c:if>
 						</div>
 					</c:if>
 				</div>
