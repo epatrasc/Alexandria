@@ -108,7 +108,7 @@ public class LibroDaoImpl implements LibroDao {
 	@Override
 	public boolean delete() {
 		Connection connection = null;
-		String query = "UPDATE libri set cancellato = true WHERE id=?";
+		String query = "UPDATE libri SET cancellato = 1, disponibile = 0 WHERE id=?";
 
 		try {
 			connection = Database.getConnection();
@@ -125,6 +125,7 @@ public class LibroDaoImpl implements LibroDao {
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
 			logger.error(ex.getMessage(),ex);
+			return false;
 		} finally {
 			Database.closeConnection(connection);
 		}
@@ -171,7 +172,7 @@ public class LibroDaoImpl implements LibroDao {
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id = ?");
+			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_libri from libri where id = ? and cancellato is false");
 			pst.setInt(1, id);
 
 			ResultSet rs = pst.executeQuery();

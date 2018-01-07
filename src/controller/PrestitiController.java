@@ -28,8 +28,15 @@ public class PrestitiController extends HttpServlet {
 
 		Utente utente = (Utente) session.getAttribute("utente");
 		PrestitiDao prestitiDao = new PrestitiDaoImpl();
-
-		List<Prestito> prestiti = prestitiDao.getPrestitiByUserId(utente.getId());
+		boolean isAmministratore = utente.getRuolo().equals(Utente.amministratore());
+		List<Prestito> prestiti = null;
+		
+		if(isAmministratore){
+			prestiti = prestitiDao.getPrestiti();
+		}else{
+			prestiti = prestitiDao.getPrestitiByUserId(utente.getId());
+		}
+		
 		request.setAttribute("listaPrestiti", prestiti);
 
 		rd = ctx.getRequestDispatcher("/prestiti.jsp");

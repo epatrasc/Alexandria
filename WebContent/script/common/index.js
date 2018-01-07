@@ -4,7 +4,7 @@ const parseResponse = responseText => {
     : false;
 };
 
-const handleError = ()=>{
+const handleError = (xhttp)=>{
 	console.log(xhttp && xhttp.statusText);
     alert("Oops c'e'stato un errore lato server");
 }

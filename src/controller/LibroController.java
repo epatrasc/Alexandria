@@ -5,8 +5,6 @@ import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -21,7 +19,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import dao.implement.LibroDaoImpl;
+import dao.implement.PrestitoDaoImpl;
 import model.Libro;
+import model.Prestito;
 import model.StatusResponse;
 import model.Utente;
 import utils.JSONManager;
@@ -150,7 +150,34 @@ public class LibroController extends HttpServlet {
 		RequestDispatcher rd = ctx.getRequestDispatcher("/libro.jsp");
 		rd.forward(request, response);
 	}
+	
+	public void cancella(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		out = response.getWriter();
 
+		int idLibro = Integer.parseInt(request.getParameter("idLibro"));
+		libro = new Libro(idLibro);
+		LibroDaoImpl libroDao = new LibroDaoImpl(libro);
+
+		if (!libroDao.exists()) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con id '%s' gia' rimosso o non presente a catalogo", idLibro))));
+			return;
+		}
+		
+		Prestito prestito = new PrestitoDaoImpl().getPrestitoByIdLibro(idLibro);
+		if(prestito != null){
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Il libro con l'id %s e' in prestito all'utente %s, non possibile la cancellazione", prestito.getIdLibro(),prestito.getIdUtente()))));
+			return;
+		}
+		
+		if (!libroDao.delete()) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, "Errore durante il tentativo di rimozione del libro con id" + libro.getId())));
+			return;
+		}
+
+		out.println(JSONMan.serializeJson(new StatusResponse(true, "Libro rimosso dal catalogo!", Integer.toString(libro.getId()))));
+		return;
+	}
+	
 	public void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
 
@@ -170,7 +197,7 @@ public class LibroController extends HttpServlet {
 		LibroDaoImpl libroDao = new LibroDaoImpl(libro);
 
 		if (!libroDao.exists()) {
-			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con id '%s' non presente a catalogo", libro.getTitolo()))));
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con id '%s' non presente a catalogo", libro.getId()))));
 			return;
 		}
 

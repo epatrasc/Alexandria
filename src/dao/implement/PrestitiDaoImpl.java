@@ -45,6 +45,33 @@ public class PrestitiDaoImpl implements PrestitiDao {
         return null;
     }
     
+    @Override
+    public List<Prestito> getPrestiti() {
+        Connection connection = null;
+
+        try {
+            connection = Database.getConnection();
+
+            PreparedStatement pst = connection
+                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti");
+            ResultSet rs = pst.executeQuery();
+
+            List<Prestito> prestiti = new ArrayList<>();
+            while (rs.next()) {
+            	prestiti.add(fetchResultSet(rs));
+            }
+
+            return prestiti.size() > 0 ?prestiti : null;
+        } catch (SQLException ex) {
+        	Database.printSQLException(ex);
+			logger.error(ex.getStackTrace());
+        } finally {
+            Database.closeConnection(connection);
+        }
+
+        return null;
+    }
+    
     private Prestito fetchResultSet(ResultSet rs) throws SQLException {
         int index = 1;
 

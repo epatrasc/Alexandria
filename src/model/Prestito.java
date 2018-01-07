@@ -12,6 +12,10 @@ public class Prestito {
 	public Prestito() {
 	}
 
+	public Prestito(int idLibro) {
+		this.idLibro = idLibro;
+	}
+	
 	public Prestito(int idUtente, int idLibro) {
 		this.idUtente = idUtente;
 		this.idLibro = idLibro;

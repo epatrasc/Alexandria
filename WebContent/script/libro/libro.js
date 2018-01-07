@@ -1,4 +1,3 @@
-const xhttp = new XMLHttpRequest();
 const Libro = {};
 Libro.urlRedirect = '../libro/visualizza?idLibro=';
 
@@ -8,11 +7,11 @@ Libro.aggiungi = () => {
   const url = "/libro/insert";
   const params = Libro.getParams();
 
-  
+  const xhttp = new XMLHttpRequest();
   xhttp.open("POST", contextPath + url, true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.onload = handleResponseLibro;
-  xhttp.onerror = handleError;
+  xhttp.onload = ()=> handleResponseLibro(xhttp);
+  xhttp.onerror = ()=> handleError(xhttp);
   xhttp.send(params);
 };
 
@@ -22,12 +21,26 @@ Libro.modifica = () => {
   const url = "/libro/update";
   const params = Libro.getParams();
 
-  
+  const xhttp = new XMLHttpRequest();
   xhttp.open("POST", contextPath + url, true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.onload = handleResponseLibro;
-  xhttp.onerror = handleError;
+  xhttp.onload = ()=> handleResponseLibro(xhttp);
+  xhttp.onerror = ()=> handleError(xhttp);
   xhttp.send(params);
+};
+
+Libro.cancella = (idLibro) => {
+  console.log("richiesta di cancellazione libro con id "+ idLibro);
+  
+  if (!idLibro) return;
+  
+  const url = `/libro/cancella?idLibro=${idLibro}`;
+
+  const xhttp = new XMLHttpRequest();
+  xhttp.open("GET", contextPath + url, true);
+  xhttp.onload = ()=> handleResponseLibroDelete(xhttp);
+  xhttp.onerror = ()=> handleError(xhttp);
+  xhttp.send();
 };
 	
 Libro.getParams = () => {
@@ -53,13 +66,25 @@ $("#modificaLibro").submit(function(e) {
   return false;
 });
 
-const handleResponseLibro = () => {
+const handleResponseLibro = (xhttp) => {
     const response = parseResponse(xhttp.responseText);
     
     if (response && response.done) {
     	const idLibro = response.param;
-
     	alert(response.messaggio);
     	window.location.href = Libro.urlRedirect + idLibro;
+    }
+};
+
+const handleResponseLibroDelete = (xhttp) => {
+    const response = parseResponse(xhttp.responseText);
+    
+    if (response) {
+    	alert(response.messaggio);
+    	
+    }
+    
+    if(response && response.done){
+    	location.reload();
     }
 };

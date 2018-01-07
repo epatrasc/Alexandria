@@ -12,7 +12,6 @@
 		</div>
 	</div>
 	<%@include file="/includes/footer.jsp"%>
-	<script src="<c:url value="/script/libro/libro.js" />"></script>
 </body>
 </html>
 

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import dao.implement.LibroDaoImpl;
 import dao.implement.PrestitoDaoImpl;
+import dao.implement.UtenteDaoImpl;
 import dao.interfaces.LibroDao;
 import dao.interfaces.PrestitoDao;
 import model.Prestito;
@@ -24,7 +25,7 @@ public class PrestitoController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private JSONManager JSONMan = new JSONManager();
 	private int idLibro;
-	private PrestitoDao prestito;
+	private PrestitoDao prestitoDao;
 	private PrintWriter out;
 	private Utente utente;
 	
@@ -44,7 +45,7 @@ public class PrestitoController extends HttpServlet {
 	        
 			break;
 		case "presta":
-			presta();
+			presta(request, response);
 
 			break;
 		case "restituisci":
@@ -54,21 +55,28 @@ public class PrestitoController extends HttpServlet {
 		}
 	}
 
-	private void presta() {
+	private void presta(HttpServletRequest request, HttpServletResponse response) {
 		LibroDao libroDao = new LibroDaoImpl(idLibro);
-
+		boolean isAmministratore = utente.getRuolo().equals(Utente.amministratore());
+		int idUtentePrestito = isAmministratore ? Integer.parseInt(request.getParameter("idUtente")): utente.getId();
+		
+		if(!new UtenteDaoImpl().exists(idUtentePrestito)){
+			out.println(JSONMan.serializeJson(new StatusResponse(true, String.format("L'utente con id = %d non esiste", idUtentePrestito))));
+			return;
+		}
+		
 		if (!libroDao.exists()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(true, String.format("Il libro con id = %d non esiste", idLibro))));
 			return;
 		}
 		
-		prestito = new PrestitoDaoImpl(utente.getId(), idLibro);
-		if (prestito.exists()) {
+		prestitoDao = new PrestitoDaoImpl(idUtentePrestito , idLibro);
+		if (prestitoDao.exists()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(false, "Libro non disponibile")));
 			return;
 		}
 
-		if (prestito.presta()) {
+		if (prestitoDao.presta()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(true, "Operazione conclusa con successo")));
 			return;
 		}
@@ -77,13 +85,20 @@ public class PrestitoController extends HttpServlet {
 	}
 
 	private void restituisci() {
-		prestito = new PrestitoDaoImpl(utente.getId(), idLibro);
-		if (!prestito.exists()) {
+		boolean isAmministratore = utente.getRuolo().equals(Utente.amministratore());
+		
+		if(isAmministratore){
+			prestitoDao = new PrestitoDaoImpl(idLibro);
+		}else{
+			prestitoDao = new PrestitoDaoImpl(utente.getId(), idLibro);
+		}
+
+		if (!prestitoDao.exists()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(false, "Libro gia' restituito")));
 			return;
 		}
 
-		if (prestito.restituisci()) {
+		if (prestitoDao.restituisci()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(true, "Operazione conclusa con successo")));
 			return;
 		}

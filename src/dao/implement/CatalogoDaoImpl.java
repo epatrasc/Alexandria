@@ -23,7 +23,7 @@ public class CatalogoDaoImpl implements CatalogoDao {
 		try {
 			connection = Database.getConnection();
 			
-			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile FROM libri");
+			PreparedStatement pst = connection.prepareStatement("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile FROM libri where cancellato is not true");
 			ResultSet rs = pst.executeQuery();
 
 			List<Libro> libri = new ArrayList<>();

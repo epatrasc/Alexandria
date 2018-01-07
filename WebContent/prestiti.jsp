@@ -7,6 +7,36 @@
 		<%@include file="includes/header.jsp"%>
 		<div role="main" class="container">
 			<c:if test="${requestScope.listaPrestiti != null}">
+				<c:if test="${utente.ruolo == 'amministratore'}">
+				<table>
+					<tr>
+						<th>Utente</th>
+						<th>Libro</th>
+						<th>Data Prestito</th>
+						<th>Data Restituzione</th>
+						<th> </th>
+					</tr>
+					<c:forEach var="prestiti" items="${requestScope.listaPrestiti}"
+						varStatus="loop">
+						<tr>
+							<td>${prestiti.idUtente}</td>
+							<td>${prestiti.idLibro}</td>
+							<td>${prestiti.dataPrestito}</td>
+							<td>${prestiti.dataRestituzione}</td>
+							<td>
+								<c:if test="${!prestiti.restituito}">
+									<button onclick="Prestito.restituisci(${prestiti.idLibro})">Restituisci
+									</button>
+								</c:if>
+								<c:if test="${prestiti.restituito}">
+									Restituito
+								</c:if>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				</c:if>
+				<c:if test="${utente.ruolo != 'amministratore'}">
 				<table>
 					<tr>
 						<th>Libro</th>
@@ -20,10 +50,19 @@
 							<td>${prestiti.idLibro}</td>
 							<td>${prestiti.dataPrestito}</td>
 							<td>${prestiti.dataRestituzione}</td>
-							<td><c:if test="${!prestiti.restituito}"><button onclick="Prestito.restituisci(${prestiti.idLibro})">Restituisci</button></c:if></td>
+							<td>
+								<c:if test="${!prestiti.restituito}">
+									<button onclick="Prestito.restituisci(${prestiti.idLibro})">Restituisci
+									</button>
+								</c:if>
+								<c:if test="${prestiti.restituito}">
+									Restituito
+								</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
+				</c:if>
 			</c:if>
 			<c:if test="${requestScope.listaPrestiti == null}">
 				<p>Non hai preso in prestito nessun libro</p>
@@ -31,7 +70,6 @@
 		</div>
 	</div>
 	<%@include file="/includes/footer.jsp"%>
-	<script src="<c:url value="/script/prestito/prestito.js" />"></script>
 </body>
 </html>
 

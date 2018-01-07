@@ -14,7 +14,8 @@ import dao.interfaces.PrestitoDao;
 import model.Prestito;
 
 public class PrestitoDaoImpl implements PrestitoDao {
-	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
+	private static final Logger logger = LogManager.getLogger(new Object() {
+	}.getClass().getEnclosingClass());
 	private Prestito prestito;
 
 	public PrestitoDaoImpl() {
@@ -24,6 +25,10 @@ public class PrestitoDaoImpl implements PrestitoDao {
 		this.prestito = new Prestito(idUtente, idLibro);
 	}
 
+	public PrestitoDaoImpl(int idLibro) {
+		this.prestito = new Prestito(idLibro);
+	}
+
 	public PrestitoDaoImpl(Prestito prestito) {
 		if (prestito == null) {
 			throw new IllegalArgumentException("Prestito non inzializzato, passare un prestito valido");
@@ -31,17 +36,17 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 		this.prestito = prestito;
 	}
-	
+
 	@Override
 	public boolean presta() {
 		return insert();
 	}
-	
+
 	@Override
 	public boolean restituisci() {
 		return update();
 	}
-	
+
 	@Override
 	public boolean insert() {
 		Connection connection = null;
@@ -51,11 +56,11 @@ public class PrestitoDaoImpl implements PrestitoDao {
 		try {
 			connection = Database.getConnection();
 			connection.setAutoCommit(false);
-			
+
 			PreparedStatement pst = connection.prepareStatement(queryAddPestito, Statement.RETURN_GENERATED_KEYS);
 			pst.setInt(1, prestito.getIdUtente());
 			pst.setInt(2, prestito.getIdLibro());
-			
+
 			if (pst.executeUpdate() == 0) {
 				logger.info("Creating prestito failed, no rows affected.");
 				connection.rollback();
@@ -65,7 +70,7 @@ public class PrestitoDaoImpl implements PrestitoDao {
 			pst = connection.prepareStatement(queryUpdateLibro);
 			pst.setInt(1, prestito.getIdLibro());
 
-			if(pst.executeUpdate() != 1){
+			if (pst.executeUpdate() != 1) {
 				logger.info("Updating libro failed, no rows affected.");
 				connection.rollback();
 				return false;
@@ -74,9 +79,13 @@ public class PrestitoDaoImpl implements PrestitoDao {
 			logger.info(String.format("Inserito un nuovo prestito idUtente: %d, idLibro: %d", prestito.getIdUtente(), prestito.getIdLibro()));
 			connection.commit();
 		} catch (SQLException ex) {
-			try { connection.rollback(); } catch (SQLException e) { e.printStackTrace(); }
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			Database.printSQLException(ex);
-			logger.error(ex.getMessage(),ex);
+			logger.error(ex.getMessage(), ex);
 
 			return false;
 		} finally {
@@ -89,42 +98,45 @@ public class PrestitoDaoImpl implements PrestitoDao {
 	@Override
 	public boolean update() {
 		Connection connection = null;
-		String queryUpdatePrestito = "UPDATE prestiti set data_restituzione = CURRENT_TIMESTAMP, restituito = true WHERE id_utente = ? and id_libro = ?";
+		String queryUpdatePrestito = "UPDATE prestiti set data_restituzione = CURRENT_TIMESTAMP, restituito = true WHERE id_libro = ? and (restituito= 0 or data_restituzione is null)";
 		String queryUpdateLibro = "UPDATE libri set disponibile = true WHERE id = ?";
 
 		try {
 			connection = Database.getConnection();
 			connection.setAutoCommit(false);
-			
+
 			PreparedStatement pst = connection.prepareStatement(queryUpdatePrestito);
-			pst.setInt(1, prestito.getIdUtente());
-			pst.setInt(2, prestito.getIdLibro());
+			pst.setInt(1, prestito.getIdLibro());
 
 			if (pst.executeUpdate() == 0) {
 				logger.info("Update prestito failed, no rows affected.");
 				connection.rollback();
 				return false;
 			}
-			
+
 			pst.clearParameters();
 			pst = connection.prepareStatement(queryUpdateLibro);
 			pst.setInt(1, prestito.getIdLibro());
-			
-			if(pst.executeUpdate() != 1){
+
+			if (pst.executeUpdate() != 1) {
 				logger.info("Updating libro failed, no rows affected.");
 				connection.rollback();
 				return false;
 			}
 			connection.commit();
 		} catch (SQLException ex) {
-			try { connection.rollback(); } catch (SQLException e) { e.printStackTrace(); }
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			Database.printSQLException(ex);
-			logger.error(ex.getMessage(),ex);
+			logger.error(ex.getMessage(), ex);
 			return false;
 		} finally {
 			Database.closeConnection(connection);
 		}
-		
+
 		return true;
 	}
 
@@ -134,13 +146,38 @@ public class PrestitoDaoImpl implements PrestitoDao {
 	}
 
 	@Override
+	public Prestito getPrestitoByIdLibro(int idLibro) {
+		Connection connection = null;
+
+		try {
+			connection = Database.getConnection();
+
+			PreparedStatement pst = connection.prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_libro = ? and restituito = 0");
+			pst.setInt(1, idLibro);
+			ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return fetchResultSet(rs);
+			}
+
+			return null;
+		} catch (SQLException ex) {
+			Database.printSQLException(ex);
+			logger.error(ex.getMessage(), ex);
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return null;
+	}
+
+	@Override
 	public Prestito getPrestitoById(int idUtente, int idLibro) {
 		Connection connection = null;
 
 		try {
 			connection = Database.getConnection();
 
-			PreparedStatement pst = connection.prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ? and id_libro = ?");
+			PreparedStatement pst = connection.prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ? and id_libro = ? and restituito = 0");
 			pst.setInt(1, idUtente);
 			pst.setInt(2, idLibro);
 			ResultSet rs = pst.executeQuery();
@@ -151,18 +188,18 @@ public class PrestitoDaoImpl implements PrestitoDao {
 			return null;
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex.getMessage(),ex);
+			logger.error(ex.getMessage(), ex);
 		} finally {
 			Database.closeConnection(connection);
 		}
 
 		return null;
 	}
-	
+
 	public boolean exists() {
 		return exists(prestito.getIdLibro());
 	}
-	
+
 	public boolean exists(int idLibro) {
 		Connection connection = null;
 
@@ -171,15 +208,15 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt_prestiti from prestiti where id_libro = ? and restituito = 0");
 			pst.setInt(1, idLibro);
-			
+
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
-				return rs.getInt(1)> 0 ? true : false;
+				return rs.getInt(1) > 0 ? true : false;
 			}
 
 		} catch (SQLException ex) {
 			Database.printSQLException(ex);
-			logger.error(ex.getMessage(),ex);
+			logger.error(ex.getMessage(), ex);
 			return false;
 		} finally {
 			Database.closeConnection(connection);
@@ -187,14 +224,12 @@ public class PrestitoDaoImpl implements PrestitoDao {
 
 		return false;
 	}
-	
-	private Prestito fetchResultSet(ResultSet rs) throws SQLException {
-		rs.next();
 
-		int index = 1;
+	private Prestito fetchResultSet(ResultSet rs) throws SQLException {
+		int index = 0;
 
 		Prestito prestito = new Prestito();
-		prestito.setIdUtente(rs.getInt(index));
+		prestito.setIdUtente(rs.getInt(++index));
 		prestito.setIdLibro(rs.getInt(++index));
 		prestito.setDataPrestito(rs.getDate(++index));
 		prestito.setDataRestituzione(rs.getDate(++index));

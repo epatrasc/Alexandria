@@ -138,7 +138,7 @@ public class UtenteDaoImpl implements UtenteDao {
 
 		return true;
 	}
-
+	
 	public Utente getUtenteById(int id) {
 		Connection connection = null;
 
@@ -159,6 +159,30 @@ public class UtenteDaoImpl implements UtenteDao {
 		}
 
 		return null;
+	}
+	
+	public boolean exists(int id) {
+		Connection connection = null;
+
+		try {
+			connection = Database.getConnection();
+
+			PreparedStatement pst = connection.prepareStatement("select count(1) as cnt from utenti where id = ? ");
+			pst.setInt(1, id);
+
+			ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0 ? true : false;
+			}
+
+		} catch (SQLException ex) {
+			Database.printSQLException(ex);
+			logger.error(ex);
+		} finally {
+			Database.closeConnection(connection);
+		}
+
+		return false;
 	}
 
 	public Utente getUtente() {
