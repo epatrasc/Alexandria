@@ -2,7 +2,7 @@
 <header class="header clearfix">
 	<%@include file="menu.jsp" %>
 	<div class="row">
-		<div class="col-4"><h3 class="text-muted">Alexandria</h3></div>
+		<div class="col-4"><h4 class="text-muted">Library of <strong>Alexandria</strong></h4></div>
 		<c:if test="${isLogged == true && utente != null}">
 		<div class="col">
 			<div class="login-space">

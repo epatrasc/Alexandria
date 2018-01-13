@@ -7,7 +7,7 @@
 				<div class="card-deck">
 		</c:if>
 		<div class="card card-outline-secondary text-center w-25 pb-1">
-			<img class="card-img-top mb-1" src="${libro.imageUrl}"
+			<img class="card-img-top mb-1" src="${libro.imageUrl}" onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libro.id}" />'"
 				style="height: 100%" alt="${libro.titolo}">
 			<c:if test="${utente != null}">
 				<div class="card-block">
