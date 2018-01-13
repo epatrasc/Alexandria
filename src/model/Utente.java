@@ -56,11 +56,11 @@ public class Utente {
 	}
 	
 	public boolean isAmministratore() {
-		return ruolo == Ruoli.amministratore.toString();
+		return ruolo.equals(Ruoli.amministratore.toString());
 	}
 	
 	public boolean isCliente() {
-		return ruolo == Ruoli.cliente.toString();
+		return ruolo.equals(Ruoli.cliente.toString());
 	}
 	
 	public boolean isAttivo() {

@@ -14,12 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import dao.implement.CatalogoDaoImpl;
+import dao.implement.UtentiDaoImpl;
 import model.Libro;
 import model.Utente;
 
 @WebServlet("/catalogo/*")
 public class CatalogoController extends HttpServlet {
+	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
 	private static final long serialVersionUID = 1L;
 	private Utente utente;
 
@@ -34,12 +39,12 @@ public class CatalogoController extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		utente = (Utente) session.getAttribute("utente");
-		
+
 		CatalogoDaoImpl catalogo = new CatalogoDaoImpl();
-		
-		List<Libro> libri = utente !=null && utente.isCliente() ? catalogo.getLibriDisponibili() : catalogo.getLibri();
+
+		List<Libro> libri = utente != null && utente.isCliente() ? catalogo.getLibriDisponibili() : catalogo.getLibri();
 		request.setAttribute("libri", libri);
-		
+
 		Method doAction;
 		try {
 			doAction = CatalogoController.class.getMethod(action, HttpServletRequest.class, HttpServletResponse.class);
@@ -52,12 +57,17 @@ public class CatalogoController extends HttpServlet {
 
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext ctx = getServletContext();
+		logger.info("mostra catalogo");
+		if (utente.isAmministratore()) {
+			List<Utente> utenti = new UtentiDaoImpl().getUtenti();
+			request.setAttribute("utenti", utenti);
+		}
+		
 		RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo.jsp");
 		rd.forward(request, response);
 	}
-	
+
 	public void aggiungi(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
 		response.sendRedirect(request.getContextPath() + "/libro/aggiungi");
 	}
 

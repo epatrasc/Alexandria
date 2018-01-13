@@ -38,5 +38,5 @@
 	</div>
 
 	<input id="idLibro" type="hidden" name="idLibro" value="${libro.id}">
-	<button class="btn btn-lg btn-primary btn-block" type="submit">Modifica</button>
+	<button class="btn btn-primary btn-block" type="submit">Modifica</button>
 </form>

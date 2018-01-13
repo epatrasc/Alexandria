@@ -11,22 +11,24 @@ Prestito.presta = idLibro => {
   xhttp.send();
 };
 
-Prestito.prestaModal = (event) => {
+Prestito.prestaModal = () => {
   const idLibro = $("#idLibroModal").val();
-  const idUtente = $("#idUtenteModal").val();
-  console.log(`richiesta prestito libro con id = ${idLibro} per l'utente ${idUtente}`);
+  const idUtente = $("select#idUtenteModal option:checked").val();
+  console.log(
+    `richiesta prestito libro con id = ${idLibro} per l'utente ${idUtente}`
+  );
 
   if (!Prestito.isValidIdUtente(idUtente)) {
-    // TODO aggiorna modal box to ask for the user
-	  alert("Inserire un id utente valido")
-	  return;
+    $(".alert").alert();
+    $(".alert").removeClass("d-none");
+    return;
   }
-  
-  //clean modal
+
+  // clean modal
   $("#idLibroModal").val("");
   $("#idUtenteModal").val("");
-  $('#prestaModalAskUser').modal('hide')
-  
+  $("#prestaModalAskUser").modal("hide");
+
   const url = `${contextPath}/prestito/presta?idLibro=${idLibro}&idUtente=${idUtente}`;
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", url, true);
@@ -51,17 +53,24 @@ Prestito.restituisci = idLibro => {
   xhttp.send();
 };
 
-Prestito.isValidIdUtente = (idUtente) =>{
-	if(!idUtente || idUtente === ""){
-		return false;
-	}
-	
-	if(isNaN(idUtente)){
-		return false;
-	}
-	
-	return true;
-}
+Prestito.onChange = $("#idUtenteModal").change(() => {
+  if (!$(".alert").hasClass("d-none")) {
+    $(".alert").addClass("d-none");
+  }
+});
+
+Prestito.isValidIdUtente = idUtente => {
+  if (!idUtente || idUtente === "") {
+    return false;
+  }
+
+  if (isNaN(idUtente)) {
+    return false;
+  }
+
+  return true;
+};
+
 const handleResponsePrestito = xhttp => {
   const response = parseResponse(xhttp.responseText);
   if (response) {
