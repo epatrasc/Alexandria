@@ -1,20 +1,42 @@
-<form id="modificaLibro" method="post">
-    <label for="titolo" class="sr-only">Titolo</label>
-    <input id="titolo" type="text" name="titolo" value="${libro.titolo}" size="45" required >
-    
-    <label for="autori" class="sr-only">Autori</label>
-    <input id="autori" type="text" name="autori" value="${libro.autori}" required >
-    
-    <label for="editore" class="sr-only">Editore</label>
-    <input id="editore" type="text" name="editore" value="${libro.editore}" required >
-    
-    <label for="url" class="sr-only">Copertina</label>
-    <input id="url" type="text" name="url" value="${libro.imageUrl}" required >
-    
-    <label for="descrizione" class="sr-only">Descrizione</label>
-    <textarea id="descrizione" name="descrizione">
+<form id="modificaLibro" method="post" class="form-group">
+	<div class="form-group">
+		<label for="titolo">Titolo</label> <input id="titolo" name="titolo"
+			class="form-control" value="${libro.titolo}" type="text"
+			aria-describedby="Titolo" placeholder="Inserire il titolo" size="45"
+			required autofocus>
+	</div>
+
+	<div class="form-group">
+		<label for="autori">Autori</label> <input id="autori" name="autori"
+			class="form-control" type="text" value="${libro.autori}" required>
+	</div>
+
+	<div class="form-group">
+		<label for="editore">Editore</label> <input id="editore"
+			name="editore" class="form-control" type="text"
+			value="${libro.editore}" required>
+	</div>
+
+	<div class="form-group">
+		<div class="row">
+		<div class="col-4">
+				<img src="${libro.imageUrl}" />
+			</div>
+			<div class="col-8">
+				<label for="url">Copertina</label> <input id="url" name="url"
+					class="form-control" type="text" value="${libro.imageUrl}" required>
+			</div>
+			
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="descrizione">Descrizione</label>
+		<textarea id="descrizione" name="descrizione" class="form-control">
     	${libro.descrizione}
     </textarea>
-    <input id="idLibro" type="hidden" name="idLibro" value="${libro.id}">
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Modifica</button>
+	</div>
+
+	<input id="idLibro" type="hidden" name="idLibro" value="${libro.id}">
+	<button class="btn btn-lg btn-primary btn-block" type="submit">Modifica</button>
 </form>

@@ -7,10 +7,10 @@
 				<div class="card-deck">
 		</c:if>
 		<div class="card card-outline-secondary text-center w-25 pb-1">
-			<img class="card-img-top mb-1" src="${libro.imageUrl}" onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libro.id}" />'"
+			<img class="card-img-top " src="${libro.imageUrl}" onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libro.id}" />'"
 				style="height: 100%" alt="${libro.titolo}">
 			<c:if test="${utente != null}">
-				<div class="card-block">
+				<div class="card-block mt-1">
 					<button id="modifica" class="btn  btn-outline-primary mb-2"
 						onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libro.id}" />'"
 						type="submit">Dettaglio</button>
