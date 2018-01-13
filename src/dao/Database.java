@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Database {
 	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
-	private static final String CONNECTION_STRING = "jdbc:mysql://localhost/alexandria";
+	private static final String CONNECTION_STRING = "jdbc:mysql://localhost/alexandria?useSSL=false";
 	private static final String CONNECTION_USER = "root";
 	private static final String CONNECTION_PSW = "root";
 

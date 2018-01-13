@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+ 
+<!-- Author:  Crunchify.com  -->
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+		</Console>
+ 
+		<RollingFile name="RollingFile" filename="log/alexandria.log"
+			filepattern="${logPath}/%d{YYYYMMddHHmmss}-fargo.log">
+			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="100 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+ 
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>
+
+<!-- 
+# format line
+java.util.logging.SimpleFormatter.format = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n
+
+# handler
+handlers=java.util.logging.ConsoleHandler, java.util.logging.FileHandler
+
+# default file output is in user's home directory.
+java.util.logging.FileHandler.pattern = log/client_app.log
+java.util.logging.FileHandler.limit = 50000
+java.util.logging.FileHandler.count = 5
+java.util.logging.FileHandler.append = true
+java.util.logging.FileHandler.formatter = java.util.logging.SimpleFormatter
+
+-->
