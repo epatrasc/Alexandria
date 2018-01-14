@@ -50,7 +50,7 @@ public class CatalogoDaoImpl implements CatalogoDao {
 			connection = Database.getConnection();
 			
 			String query = new StringBuffer()
-					.append("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile")
+					.append("SELECT id, titolo, autori, descrizione, image_url, editore, disponibile ")
 					.append("FROM libri WHERE cancellato is not true and disponibile is true").toString();
 			
 			PreparedStatement pst = connection.prepareStatement(query);

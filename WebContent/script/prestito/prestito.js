@@ -1,4 +1,16 @@
 const Prestito = {};
+Prestito.idLibroRestituisci;
+
+Prestito.confirmPresta = (idLibro)=>{
+	Prestito.idLibroRestituisci = idLibro;
+	
+	const title = `Conferma richiesta prestito libro`;
+	const body = `Vuoi prendere in prestito il libro con id ${idLibro}?`;
+	const callback = Prestito.presta;
+	
+	askConfirmAction(title, body, callback);
+}
+
 Prestito.presta = idLibro => {
   console.log("richiesta prestito libro con id = " + idLibro);
 
@@ -37,20 +49,30 @@ Prestito.prestaModal = () => {
   xhttp.send();
 };
 
-Prestito.restituisci = idLibro => {
+Prestito.confirmRestituisci = (idLibro)=>{
+	Prestito.idLibroRestituisci = idLibro;
+	
+	const title = `Conferma restituzione libro`;
+	const body = `Vuoi resituire il libro con id ${idLibro}?`;
+	const callback = Prestito.restituisci;
+	
+	askConfirmAction(title, body, callback);
+}
+
+Prestito.restituisci = () => {
+  const idLibro = Prestito.idLibroRestituisci;
   console.log("richiesta prestito libro con id = " + idLibro);
+  try{
+	  if (!idLibro) return;
 
-  if (!idLibro) return;
-
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = () => handleResponsePrestito(xhttp);
-  xhttp.onerror = () => handleError(xhttp);
-  xhttp.open(
-    "GET",
-    contextPath + "/prestito/restituisci?idLibro=" + idLibro,
-    true
-  );
-  xhttp.send();
+	  const xhttp = new XMLHttpRequest();
+	  xhttp.onload = () => handleResponsePrestito(xhttp);
+	  xhttp.onerror = () => handleError(xhttp);
+	  xhttp.open("GET", `${contextPath}/prestito/restituisci?idLibro=${idLibro}`, true);
+	  xhttp.send();
+  }finally{
+	  Prestito.idLibroRestituisci = undefined;
+  }
 };
 
 Prestito.onChange = $("#idUtenteModal").change(() => {
