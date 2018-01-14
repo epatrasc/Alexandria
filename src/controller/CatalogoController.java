@@ -47,6 +47,7 @@ public class CatalogoController extends HttpServlet {
 
 		Method doAction;
 		try {
+			logger.debug("action:" + action);
 			doAction = CatalogoController.class.getMethod(action, HttpServletRequest.class, HttpServletResponse.class);
 			doAction.invoke(this, request, response);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -58,7 +59,7 @@ public class CatalogoController extends HttpServlet {
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext ctx = getServletContext();
 		logger.info("mostra catalogo");
-		if (utente.isAmministratore()) {
+		if (utente!= null && utente.isAmministratore()) {
 			List<Utente> utenti = new UtentiDaoImpl().getUtenti();
 			request.setAttribute("utenti", utenti);
 		}
