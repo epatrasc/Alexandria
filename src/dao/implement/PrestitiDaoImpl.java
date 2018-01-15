@@ -25,7 +25,7 @@ public class PrestitiDaoImpl implements PrestitiDao {
             connection = Database.getConnection();
 
             PreparedStatement pst = connection
-                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ?");
+                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ? ORDER BY data_restituzione , data_prestito desc, id_libro");
             pst.setInt(1, idUtente);
             ResultSet rs = pst.executeQuery();
 
@@ -53,7 +53,7 @@ public class PrestitiDaoImpl implements PrestitiDao {
             connection = Database.getConnection();
 
             PreparedStatement pst = connection
-                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti");
+                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti ORDER BY data_restituzione,data_prestito desc, id_utente, id_libro");
             ResultSet rs = pst.executeQuery();
 
             List<Prestito> prestiti = new ArrayList<>();

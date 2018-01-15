@@ -15,12 +15,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Breadcrumbs;
+
 @WebServlet(name = "Home", urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+		request.setAttribute("menu_active", "home");
+		request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.DEFAULT_HOME));
         ServletContext ctx = getServletContext();
         RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo/visualizza");
         rd.forward(request, response);

@@ -12,8 +12,8 @@
 					<tr class="thead-light">
 						<th scope="col">Utente</th>
 						<th scope="col">Libro</th>
-						<th scope="col">Data Prestito</th>
-						<th scope="col">Data Restituzione</th>
+						<th scope="col">Data <br>Prestito</th>
+						<th scope="col">Data <br>Restituzione</th>
 						<th scope="col">Stato</th>
 						<th scope="col">Azione</th>
 					</tr>
@@ -25,12 +25,12 @@
 							<td>${prestiti.dataPrestito}</td>
 							<td>${prestiti.dataRestituzione}</td>
 							<td>
-								<c:if test="${prestiti.restituito}">Restituito</c:if>
-								<c:if test="${!prestiti.restituito}">In prestito</c:if>
+								<c:if test="${prestiti.restituito}"><img src="<c:url value="/images/icon/book-returned.png"/>" height="24px" width="24px" class="rounded" alt="Restituito"/><span class="ml-1">Restituito</span></c:if>
+								<c:if test="${!prestiti.restituito}"><img src="<c:url value="/images/icon/borrow-book-icon.png"/>" height="24px" width="24px" class="rounded" alt="Restituito"/><span class="ml-1">In prestito</span></c:if>
 							</td>
 							<td>
 								<c:if test="${!prestiti.restituito}">
-									<button onclick="Prestito.restituisci(${prestiti.idLibro})">Restituisci</button>
+									<button onclick="Prestito.restituisci(${prestiti.idLibro})" class="btn btn-primary">Restituisci</button>
 								</c:if>
 							</td>
 						</tr>
@@ -41,8 +41,8 @@
 				<table class="table table-bordered">
 					<tr class="thead-light">
 						<th scope="col">Libro</th>
-						<th scope="col">Data Prestito</th>
-						<th scope="col">Data Restituzione</th>
+						<th scope="col">Data <br>Prestito</th>
+						<th scope="col">Data <br>Restituzione</th>
 						<th scope="col">Stato</th>
 						<th scope="col">Azione</th>
 					</tr>

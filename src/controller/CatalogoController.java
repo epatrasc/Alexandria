@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import dao.implement.CatalogoDaoImpl;
 import dao.implement.UtentiDaoImpl;
+import model.Breadcrumbs;
 import model.Libro;
 import model.Utente;
 
@@ -34,7 +35,13 @@ public class CatalogoController extends HttpServlet {
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-
+		String menu_active = (String) request.getAttribute("menu_active");
+		
+		if(menu_active == null || !menu_active.equals("home")){
+			request.setAttribute("menu_active", "catalogo");
+			request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.CATALOGO_VISUALIZZA));
+		}
+		
 		String action = request.getPathInfo().substring(1);
 		HttpSession session = request.getSession();
 

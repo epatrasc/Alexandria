@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import dao.implement.LibroDaoImpl;
 import dao.implement.PrestitoDaoImpl;
+import model.Breadcrumbs;
 import model.Libro;
 import model.Prestito;
 import model.StatusResponse;
@@ -41,7 +42,8 @@ public class LibroController extends HttpServlet {
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-
+		request.setAttribute("menu_active", "catalogo");
+		
 		String action = request.getPathInfo().substring(1);
 
 		HttpSession session = request.getSession();
@@ -70,6 +72,7 @@ public class LibroController extends HttpServlet {
 	}
 
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.CATALOGO_DETTAGLIO));
 		RequestDispatcher rd;
 		ServletContext ctx = getServletContext();
 		int idLibro = Integer.parseInt(request.getParameter("idLibro"));
@@ -107,6 +110,7 @@ public class LibroController extends HttpServlet {
 	}
 
 	public void modifica(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.CATALOGO_MODIFICA));
 		RequestDispatcher rd;
 		ServletContext ctx = getServletContext();
 		int idLibro = Integer.parseInt(request.getParameter("idLibro"));
@@ -144,7 +148,7 @@ public class LibroController extends HttpServlet {
 	}
 
 	public void aggiungi(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.CATALOGO_AGGIUNGI));
 		ServletContext ctx = getServletContext();
 		request.setAttribute("action", "aggiungi");
 		RequestDispatcher rd = ctx.getRequestDispatcher("/libro.jsp");

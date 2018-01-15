@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import dao.implement.PrestitiDaoImpl;
 import dao.interfaces.PrestitiDao;
+import model.Breadcrumbs;
 import model.Prestito;
 import model.Utente;
 
@@ -22,6 +23,8 @@ public class PrestitiController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("menu_active", "prestiti");
+		request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.DEFAULT_PRESTITI));
 		HttpSession session = request.getSession();
 		ServletContext ctx = getServletContext();
 		RequestDispatcher rd = null;
