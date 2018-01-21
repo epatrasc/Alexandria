@@ -25,7 +25,8 @@ import model.Utente;
 
 @WebServlet("/catalogo/*")
 public class CatalogoController extends HttpServlet {
-	private static final Logger logger = LogManager.getLogger(new Object() { }.getClass().getEnclosingClass());
+	private static final Logger logger = LogManager.getLogger(new Object() {
+	}.getClass().getEnclosingClass());
 	private static final long serialVersionUID = 1L;
 	private Utente utente;
 
@@ -36,12 +37,12 @@ public class CatalogoController extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		String menu_active = (String) request.getAttribute("menu_active");
-		
-		if(menu_active == null || !menu_active.equals("home")){
+
+		if (menu_active == null || !menu_active.equals("home")) {
 			request.setAttribute("menu_active", "catalogo");
 			request.setAttribute("breadcrumbs", new Breadcrumbs(Breadcrumbs.CATALOGO_VISUALIZZA));
 		}
-		
+
 		String action = request.getPathInfo().substring(1);
 		HttpSession session = request.getSession();
 
@@ -51,7 +52,7 @@ public class CatalogoController extends HttpServlet {
 
 		List<Libro> libri = utente != null && utente.isCliente() ? catalogo.getLibriDisponibili() : catalogo.getLibri();
 		request.setAttribute("libri", libri);
-
+		
 		Method doAction;
 		try {
 			logger.debug("action:" + action);
@@ -66,11 +67,11 @@ public class CatalogoController extends HttpServlet {
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext ctx = getServletContext();
 		logger.info("mostra catalogo");
-		if (utente!= null && utente.isAmministratore()) {
+		if (utente != null && utente.isAmministratore()) {
 			List<Utente> utenti = new UtentiDaoImpl().getUtenti();
 			request.setAttribute("utenti", utenti);
 		}
-		
+
 		RequestDispatcher rd = ctx.getRequestDispatcher("/catalogo.jsp");
 		rd.forward(request, response);
 	}
