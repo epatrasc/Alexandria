@@ -27,7 +27,7 @@ public class LoginController extends HttpServlet {
 		request.setAttribute("menu_active", "login");
 		
 		ServletContext ctx = getServletContext();
-
+		
 		String nome = request.getParameter("nome");
 		String password = request.getParameter("password");
 		boolean isAndroid = getIsAndroid(request.getParameter("isAndroid"));
@@ -74,8 +74,9 @@ public class LoginController extends HttpServlet {
 		
 		if(isAndroid){
 			response.setContentType("application/json");
+			String loginOk = String.format("{\"done\": \"true\", utente: %s}", JSONMan.serializeJson(utente));
 			PrintWriter out = response.getWriter();
-			out.append(JSONMan.serializeJson(new StatusResponse(true, String.format("Login ok"))));
+			out.append(loginOk);
 			out.close();
 			return;
 		}
