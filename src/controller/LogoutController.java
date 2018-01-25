@@ -1,8 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
 
 @WebServlet(name = "Logout", urlPatterns = { "/logout" })
 public class LogoutController extends HttpServlet {
@@ -29,8 +31,15 @@ public class LogoutController extends HttpServlet {
         
 		request.setAttribute("logout", true);
 		
-		// RequestDispatcher rd = getServletContext().getRequestDispatcher("/home");
-		// rd.forward(request, response);
+		boolean isAndroid =  !StringUtils.isEmpty(request.getParameter("isAndroid")) ? Boolean.parseBoolean(request.getParameter("isAdroid")) : false;
+		if(isAndroid){
+			String result = "{\"done\": \"true\"}";
+			PrintWriter out = response.getWriter();
+			out.append(result);
+			out.close();
+			return;
+		}
+		
 		response.sendRedirect(request.getContextPath() + "/login");
 	}
 
