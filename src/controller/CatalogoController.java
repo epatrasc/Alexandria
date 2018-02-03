@@ -1,8 +1,10 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -21,7 +23,10 @@ import dao.implement.CatalogoDaoImpl;
 import dao.implement.UtentiDaoImpl;
 import model.Breadcrumbs;
 import model.Libro;
+import model.LibroAction;
+import model.LibroUtente;
 import model.Utente;
+import utils.JSONManager;
 
 @WebServlet("/catalogo/*")
 public class CatalogoController extends HttpServlet {
@@ -49,10 +54,57 @@ public class CatalogoController extends HttpServlet {
 		utente = (Utente) session.getAttribute("utente");
 
 		CatalogoDaoImpl catalogo = new CatalogoDaoImpl();
+		List<LibroAction> libriAction = new ArrayList<>();
 
-		List<Libro> libri = utente != null && utente.isCliente() ? catalogo.getLibriDisponibili() : catalogo.getLibri();
-		request.setAttribute("libri", libri);
-		
+		if(utente!= null){
+			List<LibroUtente> libriUtente = catalogo.getLibriUtente();
+			
+
+			for (LibroUtente libroUtente : libriUtente) {
+				Libro libro = libroUtente.getLibro();
+				LibroAction libroAction = new LibroAction();
+
+				libroAction.setLibro(libro);
+
+				if (libro.isDisponibile()) {
+					libroAction.setAction(LibroAction.PRESTA);
+				} else {
+					if (utente.isAmministratore() || utente.getId() == libroUtente.getIdUtente()) {
+						libroAction.setAction(LibroAction.RESTITUISCI);
+					} else {
+						libroAction.setAction(LibroAction.NO_ACTION);
+					}
+				}
+
+				libriAction.add(libroAction);
+			}
+		}else{
+			List<Libro> libri = catalogo.getLibri();
+
+			for (Libro libro : libri) {
+				LibroAction libroAction = new LibroAction();
+				
+				libroAction.setLibro(libro);
+				libroAction.setAction(LibroAction.NO_ACTION);
+
+				libriAction.add(libroAction);
+			}
+		}
+
+		request.setAttribute("libriAction", libriAction);
+
+		boolean isAndroid = request.getParameter("isAndroid") != null ? Boolean.parseBoolean(request.getParameter("isAndroid")) : false;
+
+		if (isAndroid) {
+			JSONManager JSONMan = new JSONManager();
+			String json = JSONMan.serializeJson(libriAction);
+
+			PrintWriter out = response.getWriter();
+			out.append(json);
+			out.close();
+			return;
+		}
+
 		Method doAction;
 		try {
 			logger.debug("action:" + action);

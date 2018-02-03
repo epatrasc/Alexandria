@@ -23,9 +23,14 @@ public class PrestitiDaoImpl implements PrestitiDao {
 
         try {
             connection = Database.getConnection();
-
-            PreparedStatement pst = connection
-                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti WHERE id_utente = ? ORDER BY data_restituzione , data_prestito desc, id_libro");
+            String query = new StringBuffer()
+            		.append("SELECT id_utente, u.nome, id_libro, l.titolo, l.image_url,data_prestito, data_restituzione, restituito ") 
+            		.append("FROM prestiti p inner join utenti u on p.id_utente=u.id and u.attivo=1 ")
+            		.append("inner join libri l on p.id_libro = l.id and l.cancellato = 0 ")
+            		.append("WHERE id_utente = ? ")
+            		.append("ORDER BY data_restituzione,data_prestito desc, id_utente, id_libro ").toString();
+            
+            PreparedStatement pst = connection.prepareStatement(query);
             pst.setInt(1, idUtente);
             ResultSet rs = pst.executeQuery();
 
@@ -51,9 +56,14 @@ public class PrestitiDaoImpl implements PrestitiDao {
 
         try {
             connection = Database.getConnection();
-
+            String query = new StringBuffer()
+            		.append("SELECT id_utente, u.nome, id_libro, l.titolo, l.image_url,data_prestito, data_restituzione, restituito ") 
+            		.append("FROM prestiti p inner join utenti u on p.id_utente=u.id and u.attivo=1 ")
+            		.append("inner join libri l on p.id_libro = l.id and l.cancellato = 0 ")
+            		.append("ORDER BY data_restituzione,data_prestito desc, id_utente, id_libro ").toString();
+            		
             PreparedStatement pst = connection
-                    .prepareStatement("SELECT id_utente, id_libro, data_prestito, data_restituzione, restituito FROM prestiti ORDER BY data_restituzione,data_prestito desc, id_utente, id_libro");
+                    .prepareStatement(query);
             ResultSet rs = pst.executeQuery();
 
             List<Prestito> prestiti = new ArrayList<>();
@@ -73,11 +83,14 @@ public class PrestitiDaoImpl implements PrestitiDao {
     }
     
     private Prestito fetchResultSet(ResultSet rs) throws SQLException {
-        int index = 1;
+        int index = 0;
 
         Prestito prestito = new Prestito();
-        prestito.setIdUtente(rs.getInt(index));
+        prestito.setIdUtente(rs.getInt(++index));
+        prestito.setNomeUtente(rs.getString(++index));
         prestito.setIdLibro(rs.getInt(++index));
+        prestito.setTitoloLibro(rs.getString(++index));
+        prestito.setUrlImageLibro(rs.getString(++index));
         prestito.setDataPrestito(rs.getDate(++index));
         prestito.setDataRestituzione(rs.getDate(++index));
         prestito.setRestituito(rs.getBoolean(++index));

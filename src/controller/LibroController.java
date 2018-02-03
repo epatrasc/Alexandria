@@ -19,9 +19,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import dao.implement.LibroDaoImpl;
+import dao.implement.LibroUtenteDaoImpl;
 import dao.implement.PrestitoDaoImpl;
 import model.Breadcrumbs;
 import model.Libro;
+import model.LibroAction;
+import model.LibroUtente;
 import model.Prestito;
 import model.StatusResponse;
 import model.Utente;
@@ -43,12 +46,24 @@ public class LibroController extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		request.setAttribute("menu_active", "catalogo");
-		
+
 		String action = request.getPathInfo().substring(1);
 
 		HttpSession session = request.getSession();
 
 		utente = (Utente) session.getAttribute("utente");
+		boolean isAndroid = getIsAndroid(request.getParameter("isAndroid"));
+
+		if (isAndroid) {
+			int idLibro = Integer.parseInt(request.getParameter("idLibro"));
+			LibroUtente libroUtente = getLibroUtente(idLibro);
+			LibroAction libroAction = getLibroAction(libroUtente);
+
+			String json = JSONMan.serializeJson(libroAction);
+			out = response.getWriter();
+			out.println(json);
+			return;
+		}
 
 		if (!hasRights(utente, action)) {
 			if (utente != null) {
@@ -69,6 +84,23 @@ public class LibroController extends HttpServlet {
 			e.printStackTrace();
 			response.sendError(500);
 		}
+	}
+
+	private LibroUtente getLibroUtente(int idLibro) {
+		return new LibroUtenteDaoImpl().getLibroUtente(idLibro);
+	}
+
+	private LibroAction getLibroAction(LibroUtente libroUtente) {
+		boolean isDisponibile = libroUtente.getLibro().isDisponibile();
+		Libro libro = libroUtente.getLibro();
+
+		String action = libro.isDisponibile() ? LibroAction.PRESTA : LibroAction.RESTITUISCI;
+
+		if (!utente.isAmministratore() && !isDisponibile && utente.getId() != libroUtente.getIdUtente()) {
+			action = LibroAction.NO_ACTION;
+		}
+
+		return new LibroAction(libroUtente.getLibro(), action);
 	}
 
 	public void visualizza(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -154,7 +186,7 @@ public class LibroController extends HttpServlet {
 		RequestDispatcher rd = ctx.getRequestDispatcher("/libro.jsp");
 		rd.forward(request, response);
 	}
-	
+
 	public void cancella(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
 
@@ -166,13 +198,13 @@ public class LibroController extends HttpServlet {
 			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Libro con id '%s' gia' rimosso o non presente a catalogo", idLibro))));
 			return;
 		}
-		
+
 		Prestito prestito = new PrestitoDaoImpl().getPrestitoByIdLibro(idLibro);
-		if(prestito != null){
-			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Il libro con l'id %s e' in prestito all'utente %s, non possibile la cancellazione", prestito.getIdLibro(),prestito.getIdUtente()))));
+		if (prestito != null) {
+			out.println(JSONMan.serializeJson(new StatusResponse(false, String.format("Il libro con l'id %s e' in prestito all'utente %s, non possibile la cancellazione", prestito.getIdLibro(), prestito.getIdUtente()))));
 			return;
 		}
-		
+
 		if (!libroDao.delete()) {
 			out.println(JSONMan.serializeJson(new StatusResponse(false, "Errore durante il tentativo di rimozione del libro con id" + libro.getId())));
 			return;
@@ -181,7 +213,7 @@ public class LibroController extends HttpServlet {
 		out.println(JSONMan.serializeJson(new StatusResponse(true, "Libro rimosso dal catalogo!", Integer.toString(libro.getId()))));
 		return;
 	}
-	
+
 	public void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
 
@@ -279,6 +311,10 @@ public class LibroController extends HttpServlet {
 
 	private Libro getLibro(int idLibro) {
 		return new LibroDaoImpl(idLibro).getLibro();
+	}
+
+	private boolean getIsAndroid(String input) {
+		return input != null ? Boolean.parseBoolean(input) : false;
 	}
 
 	private boolean hasRights(Utente utente, String action) {

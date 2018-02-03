@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,6 +18,7 @@ import dao.interfaces.PrestitiDao;
 import model.Breadcrumbs;
 import model.Prestito;
 import model.Utente;
+import utils.JSONManager;
 
 @WebServlet("/prestiti")
 public class PrestitiController extends HttpServlet {
@@ -38,6 +40,17 @@ public class PrestitiController extends HttpServlet {
 			prestiti = prestitiDao.getPrestiti();
 		}else{
 			prestiti = prestitiDao.getPrestitiByUserId(utente.getId());
+		}
+		
+		boolean isAndroid = request.getParameter("isAndroid") != null ? Boolean.parseBoolean(request.getParameter("isAndroid")) : false;
+		if(isAndroid){
+			JSONManager JSONMan = new JSONManager();
+			String json = JSONMan.serializeJson(prestiti);
+			
+			PrintWriter out = response.getWriter();
+			out.append(json);
+			out.close();
+			return;
 		}
 		
 		request.setAttribute("listaPrestiti", prestiti);
