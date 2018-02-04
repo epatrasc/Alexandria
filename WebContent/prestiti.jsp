@@ -20,8 +20,8 @@
 					<c:forEach var="prestiti" items="${requestScope.listaPrestiti}"
 						varStatus="loop">
 						<tr>
-							<td>${prestiti.idUtente}</td>
-							<td>${prestiti.idLibro}</td>
+							<td><span class="capitalize">${prestiti.nomeUtente}</span></td>
+							<td><img src="${prestiti.urlImageLibro}" alt="${prestiti.titoloLibro}" class="zoom"></td>
 							<td>${prestiti.dataPrestito}</td>
 							<td>${prestiti.dataRestituzione}</td>
 							<td>
@@ -30,7 +30,7 @@
 							</td>
 							<td>
 								<c:if test="${!prestiti.restituito}">
-									<button onclick="Prestito.restituisci(${prestiti.idLibro})" class="btn btn-primary">Restituisci</button>
+									<button onclick="Prestito.confirmRestituisci(${prestiti.idLibro})" class="btn btn-primary">Restituisci</button>
 								</c:if>
 							</td>
 						</tr>
@@ -49,16 +49,16 @@
 					<c:forEach var="prestiti" items="${requestScope.listaPrestiti}"
 						varStatus="loop">
 						<tr>
-							<td>${prestiti.idLibro}</td>
+							<td><img src="${prestiti.urlImageLibro}" alt="${prestiti.titoloLibro}" class="zoom"></td>
 							<td>${prestiti.dataPrestito}</td>
 							<td>${prestiti.dataRestituzione}</td>
 							<td>
-								<c:if test="${prestiti.restituito}">Restituito</c:if>
-								<c:if test="${!prestiti.restituito}">In prestito</c:if>
+								<c:if test="${prestiti.restituito}"><img src="<c:url value="/images/icon/book-returned.png"/>" height="24px" width="24px" class="rounded" alt="Restituito"/><span class="ml-1">Restituito</span></c:if>
+								<c:if test="${!prestiti.restituito}"><img src="<c:url value="/images/icon/borrow-book-icon.png"/>" height="24px" width="24px" class="rounded" alt="Restituito"/><span class="ml-1">In prestito</span></c:if>
 							</td>
 							<td>
 								<c:if test="${!prestiti.restituito}">
-									<button onclick="Prestito.restituisci(${prestiti.idLibro})">Restituisci</button>
+									<button onclick="Prestito.confirmRestituisci(${prestiti.idLibro})" class="btn btn-primary">Restituisci</button>	
 								</c:if>
 							</td>
 						</tr>

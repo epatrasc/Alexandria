@@ -1,5 +1,6 @@
 <%@include file="modal_confirm_action.jsp" %>
 <%@include file="modal_admin_presta_ask_user.jsp" %>
+<div id="snackbar" class="snackbar"></div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>

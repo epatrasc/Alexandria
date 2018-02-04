@@ -1,8 +1,9 @@
 const Prestito = {};
 Prestito.idLibroRestituisci;
+Prestito.idLibroPresta;
 
 Prestito.confirmPresta = (idLibro)=>{
-	Prestito.idLibroRestituisci = idLibro;
+	Prestito.idLibroPresta = idLibro;
 	
 	const title = `Conferma richiesta prestito libro`;
 	const body = `Vuoi prendere in prestito il libro con id ${idLibro}?`;
@@ -11,7 +12,8 @@ Prestito.confirmPresta = (idLibro)=>{
 	askConfirmAction(title, body, callback);
 }
 
-Prestito.presta = idLibro => {
+Prestito.presta = () => {
+  const idLibro = Prestito.idLibroPresta;
   console.log("richiesta prestito libro con id = " + idLibro);
 
   if (!idLibro) return;
@@ -95,11 +97,10 @@ Prestito.isValidIdUtente = idUtente => {
 
 const handleResponsePrestito = xhttp => {
   const response = parseResponse(xhttp.responseText);
-  if (response) {
-    alert(response.messaggio);
-  }
-
   if (response && response.done) {
-    window.location.reload(true);
+	  showSnackBar(response.messaggio, () => window.location.reload(true));
+	  return;
   }
+  
+  showSnackBar(response.messaggio);
 };

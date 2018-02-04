@@ -8,7 +8,7 @@
 			<div class="login-space">
 				<div class="row">
 					<div class="col-4">
-						<img alt="utente" src="http://via.placeholder.com/65x65" />
+						<span class="clear rounded-square  rounded-square--primary">${utente.nome.substring(0, 1).toUpperCase()}</span>
 					</div>
 					<div class="col">
 						<div class="text-primary capitalize"><b>${utente.nome}</b><em class="text-secondary"> (${utente.ruolo})</em></div>

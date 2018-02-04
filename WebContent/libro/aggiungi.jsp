@@ -11,7 +11,7 @@
 
     <div class="form-group">
         <label for="editore">Editore</label>
-        <input id="editore" class="form-control" type="text" name="editore" />
+        <input id="editore" class="form-control" type="text" name="editore" required/>
     </div>
 
     <div class="form-group">

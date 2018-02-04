@@ -71,20 +71,17 @@ const handleResponseLibro = (xhttp) => {
     
     if (response && response.done) {
     	const idLibro = response.param;
-    	alert(response.messaggio);
-    	window.location.href = Libro.urlRedirect + idLibro;
+    	showSnackBar(response.messaggio, () => {window.location.href = Libro.urlRedirect + idLibro});
     }
 };
 
 const handleResponseLibroDelete = (xhttp) => {
     const response = parseResponse(xhttp.responseText);
     
-    if (response) {
-    	alert(response.messaggio);
-    	
+    if(response && response.done){
+    	showSnackBar(response.messaggio, () => location.reload());
+    	return;
     }
     
-    if(response && response.done){
-    	location.reload();
-    }
+    showSnackBar(response.messaggio);
 };

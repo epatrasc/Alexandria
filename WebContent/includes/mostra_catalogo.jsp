@@ -17,29 +17,29 @@
 				</c:if>
 				<c:if test="${utente != null}">
 					<div class="card-block mt-1">
-						<button id="modifica" class="btn  btn-outline-primary mb-2"
+						<button id="modifica" class="btn  btn-outline-primary mb-2 btn-fixed-size"
 							onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libroAction.libro.id}" />'"
 							type="submit">Dettaglio</button>
 							<c:if test="${utente.ruolo != 'amministratore'}">
 								<c:if test="${libroAction.action == 'presta'}">
 									<button id="presta"
 										onclick="Prestito.confirmPresta(${libroAction.libro.id})"
-										class="btn  btn-outline-primary mb-2" type="submit">Prendi
+										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Prendi
 										in prestito</button>
 								</c:if>
 								<c:if test="${libroAction.action == 'restituisci'}">
 									<button id="restituisci"
 										onclick="Prestito.confirmRestituisci(${libroAction.libro.id})"
-										class="btn  btn-outline-primary mb-2" type="submit">Restituisci</button>
+										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Restituisci</button>
 								</c:if>
 								<c:if test="${libroAction.action == 'no-action'}">
 									<button id="no-action" disabled
-										class="btn  btn-outline-primary mb-2" type="submit">Non Disponibile</button>
+										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Non Disponibile</button>
 								</c:if>
 							</c:if>
 							<c:if test="${utente.ruolo == 'amministratore'}">
 								<button id="prestaButton" type="button"
-									class="btn btn-outline-primary mb-2" data-toggle="modal"
+									class="btn btn-outline-primary mb-2  btn-fixed-size" data-toggle="modal"
 									data-target="#prestaModalAskUser"
 									onClick="$('#idLibroModal').val(${libroAction.libro.id})">Presta</button>
 							</c:if>
@@ -47,18 +47,18 @@
 							<c:if test="${!libroAction.libro.disponibile}">
 								<button id="presta"
 									onclick="Prestito.confirmRestituisci(${libroAction.libro.id})"
-									class="btn  btn-outline-primary mb-2">Restituisci</button>
+									class="btn  btn-outline-primary mb-2  btn-fixed-size">Restituisci</button>
 							</c:if>
-							<button id="modifica" class="btn  btn-outline-primary mb-2"
+							<button id="modifica" class="btn  btn-outline-primary mb-2  btn-fixed-size"
 								onclick="window.location.href='<c:url value="/libro/modifica?idLibro=${libroAction.libro.id}" />'"
 								type="submit">Modifica</button>
 							<button id="cancella" onclick="Libro.cancella(${libroAction.libro.id})"
-								class="btn  btn-outline-primary mb-2">Cancella</button>
+								class="btn  btn-outline-primary mb-2  btn-fixed-size">Cancella</button>
 						</c:if>
 					</div>
 				</c:if>
 			</div>
 		</div>
-		<c:if test="${(loop.index + 1)%3==0 || fn:length(requestScope.libri)==loop.index}" > </div> </c:if>
+		<c:if test="${(loop.index + 1)%3==0 || fn:length(requestScope.libriAction)==loop.index}" > </div> </c:if>
 	</c:forEach>
 </div>
