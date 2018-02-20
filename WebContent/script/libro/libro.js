@@ -8,7 +8,7 @@ Libro.aggiungi = () => {
   const params = Libro.getParams();
 
   const xhttp = new XMLHttpRequest();
-  xhttp.open("POST", contextPath + url, true);
+  xhttp.open("POST", encodeURI(contextPath + url), true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.onload = ()=> handleResponseLibro(xhttp);
   xhttp.onerror = ()=> handleError(xhttp);
@@ -22,7 +22,7 @@ Libro.modifica = () => {
   const params = Libro.getParams();
 
   const xhttp = new XMLHttpRequest();
-  xhttp.open("POST", contextPath + url, true);
+  xhttp.open("POST", encodeURI(contextPath + url), true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.onload = ()=> handleResponseLibro(xhttp);
   xhttp.onerror = ()=> handleError(xhttp);
@@ -37,7 +37,7 @@ Libro.cancella = (idLibro) => {
   const url = `/libro/cancella?idLibro=${idLibro}`;
 
   const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", contextPath + url, true);
+  xhttp.open("GET", encodeURI(contextPath + url), true);
   xhttp.onload = ()=> handleResponseLibroDelete(xhttp);
   xhttp.onerror = ()=> handleError(xhttp);
   xhttp.send();
@@ -45,12 +45,12 @@ Libro.cancella = (idLibro) => {
 	
 Libro.getParams = () => {
   var params = "";
-  params += `titolo=${$("#titolo").val()}`;
-  params += `&autori=${$("#autori").val()}`;
-  params += `&editore=${$("#editore").val()}`;
-  params += `&url=${$("#url").val()}`;
-  params += `&descrizione=${$("#descrizione").val()}`;
-  params += $("#idLibro").val() ? `&idLibro=${$("#idLibro").val()}`:'';
+  params += `titolo=${encodeURIComponent($("#titolo").val())}`;
+  params += `&autori=${encodeURIComponent($("#autori").val())}`;
+  params += `&editore=${encodeURIComponent($("#editore").val())}`;
+  params += `&url=${encodeURIComponent($("#url").val())}`;
+  params += `&descrizione=${encodeURIComponent($("#descrizione").val())}`;
+  params += $("#idLibro").val() ? `&idLibro=${encodeURIComponent($("#idLibro").val())}`:'';
   return params;
 };
 

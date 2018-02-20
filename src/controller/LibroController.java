@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import dao.implement.LibroDaoImpl;
 import dao.implement.LibroUtenteDaoImpl;
 import dao.implement.PrestitoDaoImpl;
+import dao.implement.UtentiDaoImpl;
 import model.Breadcrumbs;
 import model.Libro;
 import model.LibroAction;
@@ -133,7 +135,12 @@ public class LibroController extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}
-
+		
+		if (utente != null && utente.isAmministratore()) {
+			List<Utente> utenti = new UtentiDaoImpl().getUtenti();
+			request.setAttribute("utenti", utenti);
+		}
+		
 		request.setAttribute("action", "visualizza");
 		request.setAttribute("libro", libro);
 

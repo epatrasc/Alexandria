@@ -11,25 +11,25 @@
 					onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libroAction.libro.id}" />'"
 					style="height: 100%" alt="${libroAction.libro.titolo}">
 				<c:if test="${utente == null}">
-					<button id="modifica" class="btn  btn-outline-primary mt-2"
+					<button id="dettaglio" class="btn  btn-outline-primary mt-2"
 						onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libroAction.libro.id}" />'"
 						type="submit">Dettaglio</button>
 				</c:if>
 				<c:if test="${utente != null}">
 					<div class="card-block mt-1">
-						<button id="modifica" class="btn  btn-outline-primary mb-2 btn-fixed-size"
+						<button id="dettaglio" class="btn  btn-outline-primary mb-2 btn-fixed-size"
 							onclick="window.location.href='<c:url value="/libro/visualizza?idLibro=${libroAction.libro.id}" />'"
 							type="submit">Dettaglio</button>
 							<c:if test="${utente.ruolo != 'amministratore'}">
 								<c:if test="${libroAction.action == 'presta'}">
 									<button id="presta"
-										onclick="Prestito.confirmPresta(${libroAction.libro.id})"
+										onclick="Prestito.confirmPresta(${libroAction.libro.id},'${libroAction.libro.titolo}')"
 										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Prendi
 										in prestito</button>
 								</c:if>
 								<c:if test="${libroAction.action == 'restituisci'}">
 									<button id="restituisci"
-										onclick="Prestito.confirmRestituisci(${libroAction.libro.id})"
+										onclick="Prestito.confirmRestituisci(${libroAction.libro.id},'${libroAction.libro.titolo}')"
 										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Restituisci</button>
 								</c:if>
 								<c:if test="${libroAction.action == 'no-action'}">
@@ -37,13 +37,13 @@
 										class="btn  btn-outline-primary mb-2 btn-fixed-size" type="submit">Non Disponibile</button>
 								</c:if>
 							</c:if>
-							<c:if test="${utente.ruolo == 'amministratore'}">
+						<c:if test="${utente.ruolo == 'amministratore'}">
+							<c:if test="${libroAction.libro.disponibile}">
 								<button id="prestaButton" type="button"
 									class="btn btn-outline-primary mb-2  btn-fixed-size" data-toggle="modal"
 									data-target="#prestaModalAskUser"
 									onClick="$('#idLibroModal').val(${libroAction.libro.id})">Presta</button>
 							</c:if>
-						<c:if test="${utente.ruolo == 'amministratore'}">
 							<c:if test="${!libroAction.libro.disponibile}">
 								<button id="presta"
 									onclick="Prestito.confirmRestituisci(${libroAction.libro.id})"

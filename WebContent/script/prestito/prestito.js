@@ -2,11 +2,11 @@ const Prestito = {};
 Prestito.idLibroRestituisci;
 Prestito.idLibroPresta;
 
-Prestito.confirmPresta = (idLibro)=>{
-	Prestito.idLibroPresta = idLibro;
+Prestito.confirmPresta = (id, titolo)=>{
+	Prestito.idLibroPresta = id;
 	
 	const title = `Conferma richiesta prestito libro`;
-	const body = `Vuoi prendere in prestito il libro con id ${idLibro}?`;
+	const body = `Vuoi prendere in prestito il libro "${titolo}"?`;
 	const callback = Prestito.presta;
 	
 	askConfirmAction(title, body, callback);
@@ -19,7 +19,7 @@ Prestito.presta = () => {
   if (!idLibro) return;
 
   const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", contextPath + "/prestito/presta?idLibro=" + idLibro, true);
+  xhttp.open("GET", encodeURI(contextPath + "/prestito/presta?idLibro=" + idLibro), true);
   xhttp.onload = () => handleResponsePrestito(xhttp);
   xhttp.onerror = () => handleError(xhttp);
   xhttp.send();
@@ -45,17 +45,17 @@ Prestito.prestaModal = () => {
 
   const url = `${contextPath}/prestito/presta?idLibro=${idLibro}&idUtente=${idUtente}`;
   const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", url, true);
+  xhttp.open("GET", encodeURI(url), true);
   xhttp.onload = () => handleResponsePrestito(xhttp);
   xhttp.onerror = () => handleError(xhttp);
   xhttp.send();
 };
 
-Prestito.confirmRestituisci = (idLibro)=>{
-	Prestito.idLibroRestituisci = idLibro;
+Prestito.confirmRestituisci = (id, titolo)=>{
+	Prestito.idLibroRestituisci = id;
 	
 	const title = `Conferma restituzione libro`;
-	const body = `Vuoi resituire il libro con id ${idLibro}?`;
+	const body = `Vuoi resituire il libro "${titolo || id}"?`;
 	const callback = Prestito.restituisci;
 	
 	askConfirmAction(title, body, callback);
@@ -70,7 +70,7 @@ Prestito.restituisci = () => {
 	  const xhttp = new XMLHttpRequest();
 	  xhttp.onload = () => handleResponsePrestito(xhttp);
 	  xhttp.onerror = () => handleError(xhttp);
-	  xhttp.open("GET", `${contextPath}/prestito/restituisci?idLibro=${idLibro}`, true);
+	  xhttp.open("GET", encodeURI(`${contextPath}/prestito/restituisci?idLibro=${idLibro}`), true);
 	  xhttp.send();
   }finally{
 	  Prestito.idLibroRestituisci = undefined;

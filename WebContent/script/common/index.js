@@ -37,7 +37,7 @@ const askConfirmAction = (title, message, callback)=>{
 }
 
 const showSnackBar = (text, callback=()=>{}, level='primary') => {
-    var snackBar = document.getElementById("snackbar")
+    const snackBar = document.getElementById("snackbar")
     snackBar.innerHTML = text;
     snackBar.className = snackBar.className + " show snackbar--"+ level;
     
@@ -46,3 +46,43 @@ const showSnackBar = (text, callback=()=>{}, level='primary') => {
     	callback();
     }, 3000);
 }
+
+const validateURL = event => {
+  const url = $("#url").val();
+
+  if (isValidUrl(url)) {
+	  if ($("#url").hasClass("is-invalid")) $("#url").removeClass("is-invalid");
+      $("#imgBook").attr("src", url);
+      
+      return;
+  }
+  
+  
+  // invalid url
+  if (!$("#url").hasClass("is-invalid")) $("#url").addClass("is-invalid");
+  
+  if (event) {
+	event.preventDefault();
+  	event.stopPropagation();
+  }
+};
+
+const isValidUrl = (str) => {
+ var pattern = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  
+  if(!pattern.test(str)) return false;
+  
+  return true;
+}
+
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('validazione');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+    	  validateURL(event);
+      }, false);
+    });
+  }, false);
+})();

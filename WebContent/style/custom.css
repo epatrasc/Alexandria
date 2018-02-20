@@ -80,6 +80,10 @@
 	width: 338px;
 }
 
+.card-img-top{
+	min-height: 304px;
+}
+
 .pointer {cursor: pointer;}
 
 .capitalize {
@@ -157,4 +161,9 @@ However, delay the fade out process for 2.5 seconds */
 @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
+}
+
+img.copertina{
+	height: 328px;
+	width: 208px
 }

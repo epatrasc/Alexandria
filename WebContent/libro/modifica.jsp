@@ -1,4 +1,4 @@
-<form id="modificaLibro" method="post" class="form-group">
+<form id="modificaLibro" method="post" class="form-group validazione">
 	<div class="form-group">
 		<label for="titolo">Titolo</label> <input id="titolo" name="titolo"
 			class="form-control" value="${libro.titolo}" type="text"
@@ -18,25 +18,27 @@
 	</div>
 
 	<div class="form-group">
-		<div class="row">
-		<div class="col-4">
-				<img src="${libro.imageUrl}" />
+		<div class="row form-group">
+		<div class="col-4 form-group">
+				<img id="imgBook" src="${libro.imageUrl}" class="copertina" />
 			</div>
-			<div class="col-8">
-				<label for="url">Copertina</label> <input id="url" name="url"
-					class="form-control" type="text" value="${libro.imageUrl}" required>
+			<div class="form-group col-8">
+				<div class="row form-group">
+				<label for="url">Copertina</label> 
+				<input id="url" name="url" class="form-control" type="text" value="${libro.imageUrl}"  onblur="validateURL()" required placeholder="Url">
+				 <div class="invalid-feedback">Immettere un url valido</div>
+				</div>
+				<div class="row form-group">
+					<label for="descrizione">Descrizione</label>
+					<textarea id="descrizione" name="descrizione" rows="8" class="form-control">${libro.descrizione}</textarea>
+				</div>
 			</div>
-			
 		</div>
 	</div>
-
 	<div class="form-group">
-		<label for="descrizione">Descrizione</label>
-		<textarea id="descrizione" name="descrizione" class="form-control">
-    	${libro.descrizione}
-    </textarea>
+		<button class="btn btn-primary btn-block" type="submit">Modifica</button>
 	</div>
-
 	<input id="idLibro" type="hidden" name="idLibro" value="${libro.id}">
-	<button class="btn btn-primary btn-block" type="submit">Modifica</button>
+	<input id="titoloLibro" type="hidden" name="titoloLibro" value="${libro.titolo}">
+	<input id="titoloLibro" type="hidden" name="titoloLibro" value="${libro.titolo}">
 </form>

@@ -67,7 +67,13 @@
 				</c:if>
 			</c:if>
 			<c:if test="${requestScope.listaPrestiti == null}">
+				<c:if test="${utente.ruolo != 'amministratore'}">
 				<p>Non hai preso in prestito nessun libro</p>
+				</c:if>
+				<c:if test="${utente.ruolo == 'amministratore'}">
+				<p>Nessun libro risulta in prestito</p>
+				</c:if>
+				<button type="button" onclick="window.location.href='<c:url value="/home"/>'"class="btn btn-outline-primary pointer">Torna alla Home Page</button>
 			</c:if>
 		</div>
 	</div>

@@ -43,13 +43,13 @@
 					<c:if test="${utente.ruolo != 'amministratore'}">
 						<c:if test="${libro.disponibile}">
 							<div class="col-2">
-								<button id="presta" onclick="Prestito.confirmPresta(${libro.id})" class="btn  btn-outline-primary mb-2" type="submit">Prendi in prestito</button>
+								<button id="presta" onclick="Prestito.confirmPresta(${libro.id},'${libro.titolo}')" class="btn  btn-outline-primary mb-2" type="submit">Prendi in prestito</button>
 							</div>
 						</c:if>
 					</c:if>
 					<c:if test="${!libro.disponibile}">
 						<div class="col-2">
-							<button id="presta" onclick="Prestito.confirmRestituisci(${libro.id})"
+							<button id="presta" onclick="Prestito.confirmRestituisci(${libro.id}, '${libro.titolo}')"
 							class="btn  btn-outline-primary mb-2">Restituisci</button>
 						</div>
 					</c:if>
